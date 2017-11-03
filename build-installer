@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rbxpacker --exclude **/*.spec.lua --folder RoactRodux --name RoactRodux lib > roactrodux-installer.lua
