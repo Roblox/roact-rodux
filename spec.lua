@@ -46,7 +46,7 @@ end
 do
 	local Rodux = lemur.Instance.new("Folder", Root)
 	Rodux.Name = "Rodux"
-	habitat:loadFromFs("modules/roact/lib", Rodux)
+	habitat:loadFromFs("modules/rodux/lib", Rodux)
 end
 
 local TestEZ = lemur.Instance.new("Folder", Root)
