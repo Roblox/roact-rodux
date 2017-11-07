@@ -1,2 +1,0 @@
-# RoactRodux License
-TODO
