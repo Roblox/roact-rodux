@@ -87,7 +87,7 @@ function RoactRodux.connect(mapStoreToProps)
 		end
 
 		function Connection:didMount()
-			self.eventHandle = self.store.Changed:Connect(function(state)
+			self.eventHandle = self.store.changed:connect(function(state)
 				local storeProps = mapConnect(self.store, self.props)
 
 				self:setState({

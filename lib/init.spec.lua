@@ -17,7 +17,7 @@ return function()
 
 			Roact.reify(element, nil, "StoreProvider-test")
 
-			store:Destruct()
+			store:destruct()
 		end)
 	end)
 
@@ -58,7 +58,7 @@ return function()
 
 			expect(renderCount > 0).to.equal(true)
 
-			store:Destruct()
+			store:destruct()
 		end)
 
 		it("should receive updates to the store and re-render the wrapped component", function()
@@ -77,13 +77,13 @@ return function()
 			local store = Rodux.Store.new(reducer)
 
 			local function MyComponent(props)
-				expect(props.value).to.equal(store:GetState())
+				expect(props.value).to.equal(store:getState())
 				renderCount = renderCount + 1
 			end
 
 			local Wrapped = RoactRodux.connect(function(store)
 				return {
-					value = store:GetState()
+					value = store:getState()
 				}
 			end)(MyComponent)
 
@@ -107,12 +107,12 @@ return function()
 
 			local lastCount = renderCount
 
-			store:Dispatch("foo")
-			store:Flush()
+			store:dispatch("foo")
+			store:flush()
 
 			expect(renderCount >= lastCount + 1).to.equal(true)
 
-			store:Destruct()
+			store:destruct()
 		end)
 	end)
 end

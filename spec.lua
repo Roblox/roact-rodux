@@ -1,7 +1,25 @@
+--[[
+	Loads our library and all of its dependencies, then runs tests using TestEZ.
+]]
+
+-- If you add any dependencies, add them to this table so they'll be loaded!
+local LOAD_MODULES = {
+	{"lib", "Library"},
+	{"modules/rodux/lib", "Rodux"},
+	{"modules/roact/lib", "Roact"},
+	{"modules/testez/lib", "TestEZ"},
+}
+
+-- This makes sure we can load Lemur and other libraries that depend on init.lua
+package.path = package.path .. ";?/init.lua"
+
+-- If this fails, make sure you've run `lua bin/install-dependencies.lua` first!
 local lemur = require("modules.lemur")
 
 --[[
-	Collapse ModuleScripts named 'init' into their parent folders.
+	Collapses ModuleScripts named 'init' into their parent folders.
+
+	This is the same behavior as the collapsing mechanism from rbxpacker.
 ]]
 local function collapse(root)
 	local init = root:FindFirstChild("init")
@@ -26,40 +44,28 @@ local function collapse(root)
 	return root
 end
 
+-- Create a virtual Roblox tree
 local habitat = lemur.Habitat.new()
 
+-- We'll put all of our library code and dependencies here
 local Root = lemur.Instance.new("Folder")
 Root.Name = "Root"
 
-do
-	local RoactRodux = lemur.Instance.new("Folder", Root)
-	RoactRodux.Name = "RoactRodux"
-	habitat:loadFromFs("lib", RoactRodux)
+-- Load all of the modules specified above
+for _, module in ipairs(LOAD_MODULES) do
+	local container = lemur.Instance.new("Folder", Root)
+	container.Name = module[2]
+	habitat:loadFromFs(module[1], container)
 end
-
-do
-	local Roact = lemur.Instance.new("Folder", Root)
-	Roact.Name = "Roact"
-	habitat:loadFromFs("modules/roact/lib", Roact)
-end
-
-do
-	local Rodux = lemur.Instance.new("Folder", Root)
-	Rodux.Name = "Rodux"
-	habitat:loadFromFs("modules/rodux/lib", Rodux)
-end
-
-local TestEZ = lemur.Instance.new("Folder", Root)
-TestEZ.Name = "TestEZ"
-habitat:loadFromFs("modules/testez/lib", TestEZ)
 
 collapse(Root)
 
-local TestBootstrap = habitat:require(TestEZ.TestBootstrap)
-local TextReporter = habitat:require(TestEZ.Reporters.TextReporter)
+-- Load TestEZ and run our tests
+local TestEZ = habitat:require(Root.TestEZ)
 
-local results = TestBootstrap:run(Root.RoactRodux, TextReporter)
+local results = TestEZ.TestBootstrap:run(Root.Library, TestEZ.Reporters.TextReporter)
 
+-- Did something go wrong?
 if results.failureCount > 0 then
 	os.exit(1)
 end
