@@ -23,7 +23,7 @@ install:
   - lua bin/install-dependencies.lua
 
 script:
-  - luacheck src
+  - luacheck lib
   - lua -lluacov spec.lua
 
 after_success:
