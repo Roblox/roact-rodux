@@ -97,7 +97,7 @@ function RoactRodux.connect(mapStoreToProps)
 		end
 
 		function Connection:willUnmount()
-			self.eventHandle:Disconnect()
+			self.eventHandle:disconnect()
 		end
 
 		function Connection:render()
