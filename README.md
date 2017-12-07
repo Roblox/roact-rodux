@@ -1,10 +1,10 @@
-<h1 align="center">RoactRodux</h1>
+<h1 align="center">Roact-Rodux</h1>
 <div align="center">
-	<a href="https://travis-ci.org/Roblox/RoactRodux">
-		<img src="https://api.travis-ci.org/Roblox/RoactRodux.svg?branch=master" alt="Travis-CI Build Status" />
+	<a href="https://travis-ci.org/Roblox/roact-rodux">
+		<img src="https://api.travis-ci.org/Roblox/roact-rodux.svg?branch=master" alt="Travis-CI Build Status" />
 	</a>
-	<a href="https://coveralls.io/github/Roblox/RoactRodux?branch=master">
-		<img src="https://coveralls.io/repos/github/Roblox/RoactRodux/badge.svg?branch=master" alt="Coveralls Coverage" />
+	<a href="https://coveralls.io/github/Roblox/roact-rodux?branch=master">
+		<img src="https://coveralls.io/repos/github/Roblox/roact-rodux/badge.svg?branch=master" alt="Coveralls Coverage" />
 	</a>
 	<a href="#">
 		<img src="https://img.shields.io/badge/docs-soon-red.svg" alt="Documentation" />
@@ -18,7 +18,7 @@
 <div>&nbsp;</div>
 
 ## Installation
-**RoactRodux expects to be located inside the same object as [Roact](https://github.com/Roblox/Roact) and [Rodux](https://github.com/Roblox/Rodux). They should be installed into the same place!**
+**Roact-Rodux expects to be located inside the same object as [Roact](https://github.com/Roblox/Roact) and [Rodux](https://github.com/Roblox/Rodux). They should be installed into the same place!**
 
 ### Method 1: Installation Script (Roblox Studio)
 * Download the latest release from the [GitHub releases page](https://github.com/Roblox/RoactRodux/releases).
