@@ -67,7 +67,7 @@ return function()
 			local function reducer(state, action)
 				state = state or 0
 
-				if action == "foo" then
+				if action.type == "foo" then
 					return state + 1
 				end
 
@@ -107,7 +107,9 @@ return function()
 
 			local lastCount = renderCount
 
-			store:dispatch("foo")
+			store:dispatch({
+				type = "foo"
+			})
 			store:flush()
 
 			expect(renderCount >= lastCount + 1).to.equal(true)
