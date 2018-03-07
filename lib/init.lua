@@ -73,7 +73,7 @@ function RoactRodux.connect(mapStoreToProps)
 
 			if not store then
 				errorLines(
-					"Cannot initialize React-Rodux component without being a descendent of StoreProvider!",
+					"Cannot initialize Roact-Rodux component without being a descendent of StoreProvider!",
 					("Tried to wrap component %q"):format(tostring(component)),
 					"Make sure there is a StoreProvider above this component in the tree."
 				)
