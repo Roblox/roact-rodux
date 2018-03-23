@@ -12,7 +12,7 @@
 </div>
 
 <div align="center">
-	A binding between <a href="https://github.com/Roblox/Roact">Roact</a> and <a href="https://github.com/Roblox/Rodux">Rodux</a>.
+	A binding between <a href="https://github.com/Roblox/roact">Roact</a> and <a href="https://github.com/Roblox/rodux">Rodux</a>.
 </div>
 
 <div>&nbsp;</div>
@@ -90,7 +90,7 @@ local app = Roact.createElement(RoactRodux.StoreProvider, {
 
 Now, whenever the store updates, your connected components will receive updated data and re-render!
 
-In many other cases, RoactRodux works just like [react-redux](https://github.com/reactjs/react-redux). The public API is almost identical and most of the best practices from that ecosystem work here as well.
+In many other cases, Roact-Rodux works just like [react-redux](https://github.com/reactjs/react-redux). The public API is almost identical and most of the best practices from that ecosystem work here as well.
 
 ## License
-RoactRodux is available under the Apache 2.0 license. See [LICENSE](LICENSE) for details.
+Roact-Rodux is available under the Apache 2.0 license. See [LICENSE](LICENSE) for details.
