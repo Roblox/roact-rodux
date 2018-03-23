@@ -1,0 +1,22 @@
+{
+  "name": "roact-rodux",
+  "servePort": 8000,
+  "partitions": {
+    "src": {
+      "path": "lib",
+      "target": "ReplicatedStorage.RoactRodux"
+    },
+    "testez": {
+      "path": "modules/testez/lib",
+      "target": "ReplicatedStorage.TestEZ"
+    },
+    "roact": {
+      "path": "modules/roact/lib",
+      "target": "ReplicatedStorage.Roact"
+    },
+    "rodux": {
+      "path": "modules/rodux/lib",
+      "target": "ReplicatedStorage.Rodux"
+    }
+  }
+}
