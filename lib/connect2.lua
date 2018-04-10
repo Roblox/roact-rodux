@@ -1,88 +1,30 @@
 local Roact = require(script.Parent.Parent.Roact)
 local storeKey = require(script.Parent.storeKey)
-
-local function join(...)
-	local result = {}
-
-	for i = 1, select("#", ...) do
-		local source = select(i, ...)
-
-		if source ~= nil then
-			for key, value in pairs(source) do
-				result[key] = value
-			end
-		end
-	end
-
-	return result
-end
-
---[[
-	Transforms a list of keys and a map into a new map containing only those
-]]
-local function selectKeysFromMap(keys, map)
-	local result = {}
-
-	for i = 1, #keys do
-		local key = keys[i]
-		result[key] = map[key]
-	end
-
-	return result
-end
-
---[[
-	Compares two dictionaries, assuming that they have the same keys.
-]]
-local function oneWayShallowEqual(a, b)
-	for key, value in pairs(a) do
-		if value ~= b[key] then
-			return false
-		end
-	end
-
-	return true
-end
+local shallowEqual = require(script.Parent.shallowEqual)
+local join = require(script.Parent.join)
 
 -- A version of 'error' that outputs over multiple lines
 local function errorLines(...)
 	error(table.concat({...}, "\n"))
 end
 
+local function noop()
+	return nil
+end
+
 --[[
-	options: {
-		mapStateToProps(storeState, props) -> partialProps
-		mapDispatchToProps(dispatch) -> partialProps
-	}
+	mapStateToProps: (storeState, props) -> partialProps
+	mapDispatchToProps: (dispatch) -> partialProps
 ]]
-local function connect2(options)
+local function connect2(mapStateToProps, mapDispatchToProps)
 	local connectTrace = debug.traceback()
 
-	assert(typeof(options) == "table", "connect expects a table of options!")
-
-	local stateKeys = options.stateKeys
-	local mapStateToProps = options.mapStateToProps
-	local mapDispatchToProps = options.mapDispatchToProps
-
-	if stateKeys ~= nil and mapStateToProps == nil then
-		error("If 'stateKeys' is specified, 'mapStateToProps' must also be specified!", 2)
-	end
-
-	if mapStateToProps ~= nil and stateKeys == nil then
-		error("If 'mapStateToProps' is specified, 'stateKeys' must also be specified!", 2)
-	end
-
-	if stateKeys == nil and mapStateToProps == nil then
-		stateKeys = {}
-		mapStateToProps = function()
-			return nil
-		end
+	if mapStateToProps == nil then
+		mapStateToProps = noop
 	end
 
 	if mapDispatchToProps == nil then
-		mapDispatchToProps = function()
-			return nil
-		end
+		mapDispatchToProps = noop
 	end
 
 	return function(innerComponent)
@@ -99,10 +41,12 @@ local function connect2(options)
 		local outerComponent = Roact.Component:extend(componentName)
 
 		function outerComponent.getDerivedStateFromProps(nextProps, prevState)
-			local stateValues = mapStateToProps(prevState.storeStateSlice, nextProps)
+			local stateValues = prevState.stateMapper(prevState.storeState, nextProps)
+			local combinedValues = join(nextProps, stateValues, prevState.dispatchValues)
 
 			return {
-				stateValues = join(nextProps, stateValues, prevState.dispatchValues)
+				stateValues = stateValues,
+				combinedValues = combinedValues,
 			}
 		end
 
@@ -119,35 +63,52 @@ local function connect2(options)
 
 			self.store = store
 
-			self.state = {}
+			local storeState = store:getState()
 
-			self.state.storeStateSlice = selectKeysFromMap(stateKeys, store:getState())
-			self.state.stateValues = mapStateToProps(self.state.storeStateSlice)
+			local stateMapper = mapStateToProps
 
-			self.state.dispatchValues = mapDispatchToProps(function(...)
+			local stateValues = mapStateToProps(storeState)
+			if typeof(stateValues) == "function" then
+				stateMapper = stateValues
+				stateValues = stateValues(storeState)
+			end
+
+			local dispatchValues = mapDispatchToProps(function(...)
 				self.store:dispatch(...)
 			end)
+
+			self.state = {
+				storeState = storeState,
+				stateMapper = stateMapper,
+				stateValues = stateValues,
+				dispatchValues = dispatchValues,
+				combinedValues = join(self.props, stateValues, dispatchValues)
+			}
 		end
 
-		function outerComponent:updateState(newStoreStateSlice)
+		function outerComponent:updateState(newStoreState)
 			self:setState(function(prevState, props)
-				local newState = mapStateToProps(newStoreStateSlice, self.props)
-				local stateValues = join(self.props, newState, self.dispatchValues)
+				local newStateValues = prevState.stateMapper(newStoreState, props)
+
+				if shallowEqual(newStateValues, prevState.stateValues) then
+					-- TODO: Return nil instead once Roblox/Roact#63 is closed
+					-- This will let us cancel the render.
+					return {}
+				end
+
+				local newCombinedState = join(props, newStateValues, prevState.dispatchValues)
 
 				return {
-					stateValues = stateValues,
-					storeStateSlice = newStoreStateSlice,
+					storeState = newStoreState,
+					stateValues = newStateValues,
+					combinedState = newCombinedState,
 				}
 			end)
 		end
 
 		function outerComponent:didMount()
-			self.eventHandle = self.store.changed:connect(function(state)
-				local newStateSlice = selectKeysFromMap(stateKeys, state)
-
-				if not oneWayShallowEqual(newStateSlice, self.storeStateSlice) then
-					self:updateState(newStateSlice)
-				end
+			self.eventHandle = self.store.changed:connect(function(storeState)
+				self:updateState(storeState)
 			end)
 		end
 
@@ -156,7 +117,7 @@ local function connect2(options)
 		end
 
 		function outerComponent:render()
-			return Roact.createElement(innerComponent, self.state.stateValues)
+			return Roact.createElement(innerComponent, self.state.combinedValues)
 		end
 
 		return outerComponent
