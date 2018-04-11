@@ -91,9 +91,7 @@ local function connect2(mapStateToProps, mapDispatchToProps)
 				local newStateValues = prevState.stateMapper(newStoreState, props)
 
 				if shallowEqual(newStateValues, prevState.stateValues) then
-					-- TODO: Return nil instead once Roblox/Roact#63 is closed
-					-- This will let us cancel the render.
-					return {}
+					return nil
 				end
 
 				local newCombinedState = join(props, newStateValues, prevState.dispatchValues)
