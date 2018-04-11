@@ -70,7 +70,7 @@ local function connect2(mapStateToProps, mapDispatchToProps)
 			local stateValues = mapStateToProps(storeState, self.props)
 			if typeof(stateValues) == "function" then
 				stateMapper = stateValues
-				stateValues = stateValues(storeState)
+				stateValues = stateValues(storeState, self.props)
 			end
 
 			local dispatchValues = mapDispatchToProps(function(...)
