@@ -3,9 +3,11 @@ local storeKey = require(script.Parent.storeKey)
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
 
--- A version of 'error' that outputs over multiple lines
-local function errorLines(...)
-	error(table.concat({...}, "\n"))
+--[[
+	Formats a multi-line message with printf-style placeholders.
+]]
+local function formatMessage(lines, parameters)
+	return table.concat(lines, "\n"):format(unpack(parameters))
 end
 
 local function noop()
@@ -19,19 +21,27 @@ end
 local function connect2(mapStateToProps, mapDispatchToProps)
 	local connectTrace = debug.traceback()
 
-	if mapStateToProps == nil then
+	if mapStateToProps ~= nil then
+		assert(typeof(mapStateToProps) == "function", "mapStateToProps must be a function or nil!")
+	else
 		mapStateToProps = noop
 	end
 
-	if mapDispatchToProps == nil then
+	if mapDispatchToProps ~= nil then
+		assert(typeof(mapDispatchToProps) == "function", "mapDispatchToProps must be a function or nil!")
+	else
 		mapDispatchToProps = noop
 	end
 
 	return function(innerComponent)
 		if innerComponent == nil then
-			local message = (
-				"connect returns a function that must be passed a component.\nCheck the connection at:\n%s"
-			):format(connectTrace)
+			local message = formatMessage({
+				"connect returns a function that must be passed a component.",
+				"Check the connection at:",
+				"%s",
+			}, {
+				connectTrace,
+			})
 
 			error(message, 0)
 		end
@@ -51,22 +61,28 @@ local function connect2(mapStateToProps, mapDispatchToProps)
 		end
 
 		function outerComponent:init()
-			local store = self._context[storeKey]
+			self.store = self._context[storeKey]
 
-			if store == nil then
-				errorLines(
+			if self.store == nil then
+				local message = formatMessage({
 					"Cannot initialize Roact-Rodux connection without being a descendent of StoreProvider!",
-					("Tried to wrap component %q"):format(tostring(innerComponent)),
-					"Make sure there is a StoreProvider above this component in the tree."
-				)
+					"Tried to wrap component %q",
+					"Make sure there is a StoreProvider above this component in the tree.",
+				}, {
+					tostring(innerComponent),
+				})
+
+				error(message, 2)
 			end
 
-			self.store = store
-
-			local storeState = store:getState()
+			local storeState = self.store:getState()
 
 			local stateMapper = mapStateToProps
 
+			-- mapStateToProps can return a function instead of a state value.
+			-- In this variant, we keep that value as our 'state mapper' instead
+			-- of the original mapStateToProps. This matches react-redux and
+			-- enables connectors to keep instance-level state.
 			local stateValues = mapStateToProps(storeState, self.props)
 			if typeof(stateValues) == "function" then
 				stateMapper = stateValues
@@ -90,6 +106,7 @@ local function connect2(mapStateToProps, mapDispatchToProps)
 			self:setState(function(prevState, props)
 				local newStateValues = prevState.stateMapper(newStoreState, props)
 
+				-- We don't need to update if the result was the same.
 				if shallowEqual(newStateValues, prevState.stateValues) then
 					return nil
 				end
