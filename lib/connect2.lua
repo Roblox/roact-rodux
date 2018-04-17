@@ -18,7 +18,7 @@ end
 	mapStateToProps: (storeState, props) -> partialProps
 	mapDispatchToProps: (dispatch) -> partialProps
 ]]
-local function connect2(mapStateToProps, mapDispatchToProps)
+local function connect(mapStateToProps, mapDispatchToProps)
 	local connectTrace = debug.traceback()
 
 	if mapStateToProps ~= nil then
@@ -139,4 +139,4 @@ local function connect2(mapStateToProps, mapDispatchToProps)
 	end
 end
 
-return connect2
+return connect
