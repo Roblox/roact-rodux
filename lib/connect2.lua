@@ -7,7 +7,7 @@ local join = require(script.Parent.join)
 	Formats a multi-line message with printf-style placeholders.
 ]]
 local function formatMessage(lines, parameters)
-	return table.concat(lines, "\n"):format(unpack(parameters))
+	return table.concat(lines, "\n"):format(unpack(parameters or {}))
 end
 
 local function noop()
@@ -72,21 +72,34 @@ local function connect(mapStateToProps, mapDispatchToProps)
 					tostring(innerComponent),
 				})
 
-				error(message, 2)
+				error(message)
 			end
 
 			local storeState = self.store:getState()
 
 			local stateMapper = mapStateToProps
 
+			local stateValues = mapStateToProps(storeState, self.props)
+
 			-- mapStateToProps can return a function instead of a state value.
 			-- In this variant, we keep that value as our 'state mapper' instead
 			-- of the original mapStateToProps. This matches react-redux and
 			-- enables connectors to keep instance-level state.
-			local stateValues = mapStateToProps(storeState, self.props)
 			if typeof(stateValues) == "function" then
 				stateMapper = stateValues
 				stateValues = stateValues(storeState, self.props)
+			end
+
+			if typeof(stateValues) ~= "table" then
+				local message = formatMessage({
+					"mapStateToProps must either return a table, or return another function that returns a table.",
+					"Instead, it returned %q, which is of type %s.",
+				}, {
+					tostring(stateValues),
+					typeof(stateValues),
+				})
+
+				error(message)
 			end
 
 			local dispatchValues = mapDispatchToProps(function(...)
