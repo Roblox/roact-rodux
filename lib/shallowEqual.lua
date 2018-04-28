@@ -1,4 +1,10 @@
 local function shallowEqual(a, b)
+	if a == nil then
+		return b == nil
+	elseif b == nil then
+		return a == nil
+	end
+
 	for key, value in pairs(a) do
 		if value ~= b[key] then
 			return false

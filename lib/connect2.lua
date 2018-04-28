@@ -90,7 +90,7 @@ local function connect(mapStateToProps, mapDispatchToProps)
 				stateValues = stateValues(storeState, self.props)
 			end
 
-			if typeof(stateValues) ~= "table" then
+			if stateValues ~= nil and typeof(stateValues) ~= "table" then
 				local message = formatMessage({
 					"mapStateToProps must either return a table, or return another function that returns a table.",
 					"Instead, it returned %q, which is of type %s.",
