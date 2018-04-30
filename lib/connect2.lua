@@ -15,7 +15,10 @@ local function noop()
 end
 
 --[[
-	mapStateToProps: (storeState, props) -> partialProps
+	mapStateToProps:
+		(storeState, props) -> partialProps
+		OR
+		() -> (storeState, props) -> partialProps
 	mapDispatchToProps: (dispatch) -> partialProps
 ]]
 local function connect(mapStateToProps, mapDispatchToProps)
