@@ -14,8 +14,17 @@ return function()
 
 		expect(element).to.be.ok()
 
-		Roact.reify(element, nil, "StoreProvider-test")
+		local handle = Roact.reify(element, nil, "StoreProvider-test")
 
+		Roact.teardown(handle)
 		store:destruct()
+	end)
+
+	it("should expect a 'store' prop", function()
+		local element = Roact.createElement(StoreProvider)
+
+		expect(function()
+			Roact.reify(element)
+		end).to.throw()
 	end)
 end
