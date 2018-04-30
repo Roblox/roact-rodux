@@ -43,7 +43,7 @@ local function connect(mapStateToProps, mapDispatchToProps)
 				connectTrace,
 			})
 
-			error(message, 0)
+			error(message, 2)
 		end
 
 		local componentName = ("RoduxConnection(%s)"):format(tostring(innerComponent))
@@ -78,7 +78,6 @@ local function connect(mapStateToProps, mapDispatchToProps)
 			local storeState = self.store:getState()
 
 			local stateMapper = mapStateToProps
-
 			local stateValues = mapStateToProps(storeState, self.props)
 
 			-- mapStateToProps can return a function instead of a state value.
