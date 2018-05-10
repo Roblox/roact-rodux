@@ -210,4 +210,42 @@ return function()
 
 		Roact.teardown(handle)
 	end)
+
+	it("should return result values from the dispatch passed to mapDispatchToProps", function()
+		local function reducer()
+			return 0
+		end
+
+		local function fiveThunk()
+			return 5
+		end
+
+		local dispatch
+		local function SomeComponent(props)
+			dispatch = props.dispatch
+		end
+
+		local function mapDispatchToProps(dispatch)
+			return {
+				dispatch = dispatch
+			}
+		end
+
+		local ConnectedSomeComponent = connect2(nil, mapDispatchToProps)(SomeComponent)
+
+		-- We'll use the thunk middleware, as it should always return its result
+		local store = Rodux.Store.new(reducer, nil, { Rodux.thunkMiddleware })
+		local tree = Roact.createElement(StoreProvider, {
+			store = store,
+		}, {
+			someComponent = Roact.createElement(ConnectedSomeComponent)
+		})
+
+		local handle = Roact.reify(tree)
+
+		expect(dispatch).to.be.a("function")
+		expect(dispatch(fiveThunk)).to.equal(5)
+
+		Roact.teardown(handle)
+	end)
 end

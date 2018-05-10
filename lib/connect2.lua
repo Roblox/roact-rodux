@@ -105,7 +105,7 @@ local function connect(mapStateToProps, mapDispatchToProps)
 			end
 
 			local dispatchValues = mapDispatchToProps(function(...)
-				self.store:dispatch(...)
+				return self.store:dispatch(...)
 			end)
 
 			self.state = {
