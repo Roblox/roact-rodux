@@ -14,6 +14,21 @@ local function noop()
 	return nil
 end
 
+local function makeStateUpdater(store, mapStateToProps)
+	return function(nextProps, prevState, mappedStoreState)
+		if mappedStoreState == nil then
+			mappedStoreState = mapStateToProps(store:getState(), nextProps)
+		end
+
+		local propsForChild = join(nextProps, mappedStoreState, prevState.mappedStoreDispatch)
+
+		return {
+			mappedStoreState = mappedStoreState,
+			propsForChild = propsForChild,
+		}
+	end
+end
+
 --[[
 	mapStateToProps:
 		(storeState, props) -> partialProps
@@ -47,21 +62,6 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			})
 
 			error(message, 2)
-		end
-
-		local function makeStateUpdater(store, mapStateToProps)
-			return function(nextProps, prevState, mappedStoreState)
-				if mappedStoreState == nil then
-					mappedStoreState = mapStateToProps(store:getState(), nextProps)
-				end
-
-				local propsForChild = join(nextProps, mappedStoreState, prevState.mappedStoreDispatch)
-
-				return {
-					mappedStoreState = mappedStoreState,
-					propsForChild = propsForChild,
-				}
-			end
 		end
 
 		local componentName = ("RoduxConnection(%s)"):format(tostring(innerComponent))
