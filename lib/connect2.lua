@@ -131,7 +131,7 @@ local function connect(mapStateToProps, mapDispatchToProps)
 				return {
 					storeState = newStoreState,
 					stateValues = newStateValues,
-					combinedState = newCombinedState,
+					combinedValues = newCombinedState,
 				}
 			end)
 		end
