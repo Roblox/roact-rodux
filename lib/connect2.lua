@@ -50,16 +50,16 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		end
 
 		local function makeStateUpdater(store, mapStateToProps)
-			return function(nextProps, prevState, mapStateToPropsResult)
-				if mapStateToPropsResult == nil then
-					mapStateToPropsResult = mapStateToProps(store:getState(), nextProps)
+			return function(nextProps, prevState, mappedStoreState)
+				if mappedStoreState == nil then
+					mappedStoreState = mapStateToProps(store:getState(), nextProps)
 				end
 
-				local combinedResult = join(nextProps, mapStateToPropsResult, prevState.mapDispatchToPropsResult)
+				local propsForChild = join(nextProps, mappedStoreState, prevState.mappedStoreDispatch)
 
 				return {
-					mapStateToPropsResult = mapStateToPropsResult,
-					combinedResult = combinedResult,
+					mappedStoreState = mappedStoreState,
+					propsForChild = propsForChild,
 				}
 			end
 		end
@@ -90,30 +90,30 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			local storeState = self.store:getState()
 
 			local mapStateToProps = mapStateToPropsOrThunk
-			local mapStateToPropsResult = mapStateToProps(storeState, self.props)
+			local mappedStoreState = mapStateToProps(storeState, self.props)
 
 			-- mapStateToProps can return a function instead of a state value.
 			-- In this variant, we keep that value as our 'state mapper' instead
 			-- of the original mapStateToProps. This matches react-redux and
 			-- enables connectors to keep instance-level state.
-			if typeof(mapStateToPropsResult) == "function" then
-				mapStateToProps = mapStateToPropsResult
-				mapStateToPropsResult = mapStateToProps(storeState, self.props)
+			if typeof(mappedStoreState) == "function" then
+				mapStateToProps = mappedStoreState
+				mappedStoreState = mapStateToProps(storeState, self.props)
 			end
 
-			if mapStateToPropsResult ~= nil and typeof(mapStateToPropsResult) ~= "table" then
+			if mappedStoreState ~= nil and typeof(mappedStoreState) ~= "table" then
 				local message = formatMessage({
 					"mapStateToProps must either return a table, or return another function that returns a table.",
 					"Instead, it returned %q, which is of type %s.",
 				}, {
-					tostring(mapStateToPropsResult),
-					typeof(mapStateToPropsResult),
+					tostring(mappedStoreState),
+					typeof(mappedStoreState),
 				})
 
 				error(message)
 			end
 
-			local mapDispatchToPropsResult = mapDispatchToProps(function(...)
+			local mappedStoreDispatch = mapDispatchToProps(function(...)
 				return self.store:dispatch(...)
 			end)
 
@@ -122,22 +122,22 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			self.mapStateToProps = mapStateToProps
 			self.state = {
 				stateUpdater = stateUpdater,
-				mapDispatchToPropsResult = mapDispatchToPropsResult,
+				mappedStoreDispatch = mappedStoreDispatch,
 			}
 
-			self.state.combinedResult = stateUpdater(self.props, self.state, mapStateToPropsResult)
+			self.state.propsForChild = stateUpdater(self.props, self.state, mappedStoreState)
 		end
 
 		function outerComponent:didMount()
 			self.eventHandle = self.store.changed:connect(function(storeState)
 				self:setState(function(prevState, props)
-					local mapStateToPropsResult = self.mapStateToProps(storeState, props)
+					local mappedStoreState = self.mapStateToProps(storeState, props)
 
-					if shallowEqual(mapStateToPropsResult, prevState.mapStateToPropsResult) then
+					if shallowEqual(mappedStoreState, prevState.mappedStoreState) then
 						return nil
 					end
 
-					return prevState.stateUpdater(props, prevState, mapStateToPropsResult)
+					return prevState.stateUpdater(props, prevState, mappedStoreState)
 				end)
 			end)
 		end
@@ -147,7 +147,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		end
 
 		function outerComponent:render()
-			return Roact.createElement(innerComponent, self.state.combinedResult)
+			return Roact.createElement(innerComponent, self.state.propsForChild)
 		end
 
 		return outerComponent
