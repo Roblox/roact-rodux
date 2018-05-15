@@ -14,9 +14,9 @@ return function()
 
 		expect(element).to.be.ok()
 
-		local handle = Roact.reify(element, nil, "StoreProvider-test")
+		local handle = Roact.mount(element, nil, "StoreProvider-test")
 
-		Roact.teardown(handle)
+		Roact.unmount(handle)
 		store:destruct()
 	end)
 
@@ -24,7 +24,7 @@ return function()
 		local element = Roact.createElement(StoreProvider)
 
 		expect(function()
-			Roact.reify(element)
+			Roact.mount(element)
 		end).to.throw()
 	end)
 end

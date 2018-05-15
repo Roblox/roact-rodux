@@ -60,7 +60,7 @@ return function()
 		local ConnectedSomeComponent = connect2()(NoopComponent)
 
 		expect(function()
-			Roact.reify(Roact.createElement(ConnectedSomeComponent))
+			Roact.mount(Roact.createElement(ConnectedSomeComponent))
 		end).to.throw()
 	end)
 
@@ -82,9 +82,9 @@ return function()
 			someComponent = Roact.createElement(ConnectedSomeComponent),
 		})
 
-		local handle = Roact.reify(tree)
+		local handle = Roact.mount(tree)
 
-		Roact.teardown(handle)
+		Roact.unmount(handle)
 	end)
 
 	it("should not accept a higher-order mapStateToProps that returns a non-table value", function()
@@ -104,7 +104,7 @@ return function()
 		})
 
 		expect(function()
-			Roact.reify(tree)
+			Roact.mount(tree)
 		end).to.throw()
 	end)
 
@@ -123,7 +123,7 @@ return function()
 		})
 
 		expect(function()
-			Roact.reify(tree)
+			Roact.mount(tree)
 		end).to.throw()
 	end)
 
@@ -148,7 +148,7 @@ return function()
 			someComponent = Roact.createElement(ConnectedSomeComponent),
 		})
 
-		local handle = Roact.reify(tree)
+		local handle = Roact.mount(tree)
 
 		expect(renderCount).to.equal(1)
 
@@ -162,7 +162,7 @@ return function()
 
 		expect(renderCount).to.equal(2)
 
-		Roact.teardown(handle)
+		Roact.unmount(handle)
 	end)
 
 	it("should only call mapDispatchToProps once and never re-render if no mapStateToProps was passed", function()
@@ -191,7 +191,7 @@ return function()
 			someComponent = Roact.createElement(ConnectedSomeComponent),
 		})
 
-		local handle = Roact.reify(tree)
+		local handle = Roact.mount(tree)
 
 		expect(dispatchCount).to.equal(1)
 		expect(renderCount).to.equal(1)
@@ -208,7 +208,7 @@ return function()
 		expect(dispatchCount).to.equal(1)
 		expect(renderCount).to.equal(1)
 
-		Roact.teardown(handle)
+		Roact.unmount(handle)
 	end)
 
 	it("should return result values from the dispatch passed to mapDispatchToProps", function()
@@ -241,11 +241,11 @@ return function()
 			someComponent = Roact.createElement(ConnectedSomeComponent)
 		})
 
-		local handle = Roact.reify(tree)
+		local handle = Roact.mount(tree)
 
 		expect(dispatch).to.be.a("function")
 		expect(dispatch(fiveThunk)).to.equal(5)
 
-		Roact.teardown(handle)
+		Roact.unmount(handle)
 	end)
 end
