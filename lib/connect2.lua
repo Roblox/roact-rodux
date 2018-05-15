@@ -21,13 +21,13 @@ end
 		() -> (storeState, props) -> partialProps
 	mapDispatchToProps: (dispatch) -> partialProps
 ]]
-local function connect(mapStateToProps, mapDispatchToProps)
+local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 	local connectTrace = debug.traceback()
 
-	if mapStateToProps ~= nil then
-		assert(typeof(mapStateToProps) == "function", "mapStateToProps must be a function or nil!")
+	if mapStateToPropsOrThunk ~= nil then
+		assert(typeof(mapStateToPropsOrThunk) == "function", "mapStateToProps must be a function or nil!")
 	else
-		mapStateToProps = noop
+		mapStateToPropsOrThunk = noop
 	end
 
 	if mapDispatchToProps ~= nil then
@@ -49,18 +49,23 @@ local function connect(mapStateToProps, mapDispatchToProps)
 			error(message, 2)
 		end
 
+		local function makeStateUpdater(store, mapStateToProps)
+			return function(nextProps, prevState)
+				local stateValues = mapStateToProps(store:getState(), nextProps)
+				local combinedResult = join(nextProps, stateValues, prevState.mapDispatchToPropsResult)
+
+				return {
+					combinedResult = combinedResult,
+				}
+			end
+		end
+
 		local componentName = ("RoduxConnection(%s)"):format(tostring(innerComponent))
 
 		local outerComponent = Roact.Component:extend(componentName)
 
 		function outerComponent.getDerivedStateFromProps(nextProps, prevState)
-			local stateValues = prevState.stateMapper(prevState.storeState, nextProps)
-			local combinedValues = join(nextProps, stateValues, prevState.dispatchValues)
-
-			return {
-				stateValues = stateValues,
-				combinedValues = combinedValues,
-			}
+			return prevState.stateUpdater(nextProps, prevState)
 		end
 
 		function outerComponent:init()
@@ -80,65 +85,49 @@ local function connect(mapStateToProps, mapDispatchToProps)
 
 			local storeState = self.store:getState()
 
-			local stateMapper = mapStateToProps
-			local stateValues = mapStateToProps(storeState, self.props)
+			local mapStateToProps = mapStateToPropsOrThunk
+			local mapStateToPropsResult = mapStateToProps(storeState, self.props)
 
 			-- mapStateToProps can return a function instead of a state value.
 			-- In this variant, we keep that value as our 'state mapper' instead
 			-- of the original mapStateToProps. This matches react-redux and
 			-- enables connectors to keep instance-level state.
-			if typeof(stateValues) == "function" then
-				stateMapper = stateValues
-				stateValues = stateValues(storeState, self.props)
+			if typeof(mapStateToPropsResult) == "function" then
+				mapStateToProps = mapStateToPropsResult
+				mapStateToPropsResult = mapStateToProps(storeState, self.props)
 			end
 
-			if stateValues ~= nil and typeof(stateValues) ~= "table" then
+			if mapStateToPropsResult ~= nil and typeof(mapStateToPropsResult) ~= "table" then
 				local message = formatMessage({
 					"mapStateToProps must either return a table, or return another function that returns a table.",
 					"Instead, it returned %q, which is of type %s.",
 				}, {
-					tostring(stateValues),
-					typeof(stateValues),
+					tostring(mapStateToPropsResult),
+					typeof(mapStateToPropsResult),
 				})
 
 				error(message)
 			end
 
-			local dispatchValues = mapDispatchToProps(function(...)
+			local mapDispatchToPropsResult = mapDispatchToProps(function(...)
 				return self.store:dispatch(...)
 			end)
 
+			local stateUpdater = makeStateUpdater(self.store, mapStateToProps)
+
 			self.state = {
-				storeState = storeState,
-				stateMapper = stateMapper,
-				stateValues = stateValues,
-				dispatchValues = dispatchValues,
-				combinedValues = join(self.props, stateValues, dispatchValues)
+				stateUpdater = stateUpdater,
+				mapDispatchToPropsResult = mapDispatchToPropsResult,
 			}
-		end
 
-		function outerComponent:updateState(newStoreState)
-			self:setState(function(prevState, props)
-				local newStateValues = prevState.stateMapper(newStoreState, props)
-
-				-- We don't need to update if the result was the same.
-				if shallowEqual(newStateValues, prevState.stateValues) then
-					return nil
-				end
-
-				local newCombinedState = join(props, newStateValues, prevState.dispatchValues)
-
-				return {
-					storeState = newStoreState,
-					stateValues = newStateValues,
-					combinedValues = newCombinedState,
-				}
-			end)
+			self.state.combinedResult = stateUpdater(self.props, self.state)
 		end
 
 		function outerComponent:didMount()
 			self.eventHandle = self.store.changed:connect(function(storeState)
-				self:updateState(storeState)
+				self:setState(function(prevState, props)
+					return prevState.stateUpdater(props, prevState)
+				end)
 			end)
 		end
 
@@ -147,7 +136,7 @@ local function connect(mapStateToProps, mapDispatchToProps)
 		end
 
 		function outerComponent:render()
-			return Roact.createElement(innerComponent, self.state.combinedValues)
+			return Roact.createElement(innerComponent, self.state.combinedResult)
 		end
 
 		return outerComponent
