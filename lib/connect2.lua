@@ -14,8 +14,19 @@ local function noop()
 	return nil
 end
 
+--[[
+	The stateUpdater accepts props when they update and computes the
+	complete set of props that should be passed to the wrapped component.
+
+	Each connected component will have a stateUpdater created for it.
+
+	stateUpdater is put into the component's state in order for
+	getDerivedStateFromProps to be able to access it. It is not mutated.
+]]
 local function makeStateUpdater(store, mapStateToProps)
 	return function(nextProps, prevState, mappedStoreState)
+		-- The caller can optionally provide mappedStoreState if it needed that
+		-- value beforehand. Doing so is purely an optimization.
 		if mappedStoreState == nil then
 			mappedStoreState = mapStateToProps(store:getState(), nextProps)
 		end
@@ -66,13 +77,13 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 
 		local componentName = ("RoduxConnection(%s)"):format(tostring(innerComponent))
 
-		local outerComponent = Roact.Component:extend(componentName)
+		local Connection = Roact.Component:extend(componentName)
 
-		function outerComponent.getDerivedStateFromProps(nextProps, prevState)
+		function Connection.getDerivedStateFromProps(nextProps, prevState)
 			return prevState.stateUpdater(nextProps, prevState)
 		end
 
-		function outerComponent:init()
+		function Connection:init()
 			self.store = self._context[storeKey]
 
 			if self.store == nil then
@@ -92,10 +103,10 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			local mapStateToProps = mapStateToPropsOrThunk
 			local mappedStoreState = mapStateToProps(storeState, self.props)
 
-			-- mapStateToProps can return a function instead of a state value.
-			-- In this variant, we keep that value as our 'state mapper' instead
-			-- of the original mapStateToProps. This matches react-redux and
-			-- enables connectors to keep instance-level state.
+			-- mapStateToPropsOrThunk can return a function instead of a state
+			-- value. In this variant, we keep that value as mapStateToProps
+			-- instead of the original mapStateToProps. This matches react-redux
+			-- and enables connectors to keep instance-level state.
 			if typeof(mappedStoreState) == "function" then
 				mapStateToProps = mappedStoreState
 				mappedStoreState = mapStateToProps(storeState, self.props)
@@ -120,6 +131,9 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			local stateUpdater = makeStateUpdater(self.store, mapStateToProps)
 
 			self.mapStateToProps = mapStateToProps
+
+			-- All of the values that we put into state are intended to be used
+			-- by getDerivedStateFromProps, constructed using makeStateUpdater.
 			self.state = {
 				stateUpdater = stateUpdater,
 				mappedStoreDispatch = mappedStoreDispatch,
@@ -128,11 +142,14 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			self.state.propsForChild = stateUpdater(self.props, self.state, mappedStoreState)
 		end
 
-		function outerComponent:didMount()
-			self.eventHandle = self.store.changed:connect(function(storeState)
+		function Connection:didMount()
+			self.storeChangedConnection = self.store.changed:connect(function(storeState)
 				self:setState(function(prevState, props)
 					local mappedStoreState = self.mapStateToProps(storeState, props)
 
+					-- We run this check here so that we only check shallow
+					-- equality with the result of mapStateToProps, and not the
+					-- other props that could be passed through the connector.
 					if shallowEqual(mappedStoreState, prevState.mappedStoreState) then
 						return nil
 					end
@@ -142,15 +159,15 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			end)
 		end
 
-		function outerComponent:willUnmount()
-			self.eventHandle:disconnect()
+		function Connection:willUnmount()
+			self.storeChangedConnection:disconnect()
 		end
 
-		function outerComponent:render()
+		function Connection:render()
 			return Roact.createElement(innerComponent, self.state.propsForChild)
 		end
 
-		return outerComponent
+		return Connection
 	end
 end
 
