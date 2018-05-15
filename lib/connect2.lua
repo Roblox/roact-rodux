@@ -50,11 +50,15 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		end
 
 		local function makeStateUpdater(store, mapStateToProps)
-			return function(nextProps, prevState)
-				local stateValues = mapStateToProps(store:getState(), nextProps)
-				local combinedResult = join(nextProps, stateValues, prevState.mapDispatchToPropsResult)
+			return function(nextProps, prevState, mapStateToPropsResult)
+				if mapStateToPropsResult == nil then
+					mapStateToPropsResult = mapStateToProps(store:getState(), nextProps)
+				end
+
+				local combinedResult = join(nextProps, mapStateToPropsResult, prevState.mapDispatchToPropsResult)
 
 				return {
+					mapStateToPropsResult = mapStateToPropsResult,
 					combinedResult = combinedResult,
 				}
 			end
@@ -115,18 +119,25 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 
 			local stateUpdater = makeStateUpdater(self.store, mapStateToProps)
 
+			self.mapStateToProps = mapStateToProps
 			self.state = {
 				stateUpdater = stateUpdater,
 				mapDispatchToPropsResult = mapDispatchToPropsResult,
 			}
 
-			self.state.combinedResult = stateUpdater(self.props, self.state)
+			self.state.combinedResult = stateUpdater(self.props, self.state, mapStateToPropsResult)
 		end
 
 		function outerComponent:didMount()
 			self.eventHandle = self.store.changed:connect(function(storeState)
 				self:setState(function(prevState, props)
-					return prevState.stateUpdater(props, prevState)
+					local mapStateToPropsResult = self.mapStateToProps(storeState, props)
+
+					if shallowEqual(mapStateToPropsResult, prevState.mapStateToPropsResult) then
+						return nil
+					end
+
+					return prevState.stateUpdater(props, prevState, mapStateToPropsResult)
 				end)
 			end)
 		end
