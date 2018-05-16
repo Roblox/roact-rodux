@@ -23,7 +23,7 @@ end
 	stateUpdater is put into the component's state in order for
 	getDerivedStateFromProps to be able to access it. It is not mutated.
 ]]
-local function makeStateUpdater(store, mapStateToProps)
+local function makeStateUpdater(store)
 	return function(nextProps, prevState, mappedStoreState)
 		-- The caller can optionally provide mappedStoreState if it needed that
 		-- value beforehand. Doing so is purely an optimization.
