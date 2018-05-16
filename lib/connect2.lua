@@ -28,7 +28,7 @@ local function makeStateUpdater(store, mapStateToProps)
 		-- The caller can optionally provide mappedStoreState if it needed that
 		-- value beforehand. Doing so is purely an optimization.
 		if mappedStoreState == nil then
-			mappedStoreState = mapStateToProps(store:getState(), nextProps)
+			mappedStoreState = prevState.mapStateToProps(store:getState(), nextProps)
 		end
 
 		local propsForChild = join(nextProps, mappedStoreState, prevState.mappedStoreDispatch)
@@ -128,15 +128,24 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 				return self.store:dispatch(...)
 			end)
 
-			local stateUpdater = makeStateUpdater(self.store, mapStateToProps)
+			local stateUpdater = makeStateUpdater(self.store)
 
-			self.mapStateToProps = mapStateToProps
-
-			-- All of the values that we put into state are intended to be used
-			-- by getDerivedStateFromProps, constructed using makeStateUpdater.
 			self.state = {
+				-- Combines props, mappedStoreDispatch, and the result of
+				-- mapStateToProps into propsForChild. Stored in state so that
+				-- getDerivedStateFromProps can access it.
 				stateUpdater = stateUpdater,
+
+				-- Used by the store changed connection and stateUpdater to
+				-- construct propsForChild.
+				mapStateToProps = mapStateToProps,
+
+				-- Used by stateUpdater to construct propsForChild.
 				mappedStoreDispatch = mappedStoreDispatch,
+
+				-- Passed directly into the component that Connection is
+				-- wrapping.
+				propsForChild = nil,
 			}
 
 			self.state.propsForChild = stateUpdater(self.props, self.state, mappedStoreState)
@@ -145,7 +154,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		function Connection:didMount()
 			self.storeChangedConnection = self.store.changed:connect(function(storeState)
 				self:setState(function(prevState, props)
-					local mappedStoreState = self.mapStateToProps(storeState, props)
+					local mappedStoreState = prevState.mapStateToProps(storeState, props)
 
 					-- We run this check here so that we only check shallow
 					-- equality with the result of mapStateToProps, and not the
