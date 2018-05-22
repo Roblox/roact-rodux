@@ -43,7 +43,7 @@ return function()
 			Child = Roact.createElement(ConnectedSomeComponent),
 		})
 
-		local handle = Roact.reify(tree)
+		local handle = Roact.mount(tree)
 
 		expect(handle).to.be.ok()
 	end)
@@ -60,7 +60,7 @@ return function()
 		local tree = Roact.createElement(ConnectedSomeComponent)
 
 		expect(function()
-			Roact.reify(tree)
+			Roact.mount(tree)
 		end).to.throw()
 	end)
 
@@ -87,7 +87,7 @@ return function()
 			Child = Roact.createElement(ConnectedSomeComponent),
 		})
 
-		Roact.reify(tree)
+		Roact.mount(tree)
 
 		-- Our component should render initially
 		expect(store:getState()).to.equal(0)
