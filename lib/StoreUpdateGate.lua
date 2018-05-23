@@ -1,66 +1,46 @@
 local Roact = require(script.Parent.Parent.Roact)
 
 local storeKey = require(script.Parent.storeKey)
-local GatedSignal = require(script.Parent.GatedSignal)
+local Signal = require(script.Parent.Signal)
 
 local StoreUpdateGate = Roact.Component:extend("StoreUpdateGate")
 
 function StoreUpdateGate:init()
 	local realStore = self._context[storeKey]
 
-	if not realStore then
+	if realStore == nil then
 		error("StoreUpdateGate must be placed below a StoreProvider in the tree!")
 	end
 
-	-- The 'mock store' only exposes a subset of the real store's methods!
+	self.realStore = realStore
+
+	-- mockStore has a replaced version of 'changed'
 	local mockStore = {}
-	mockStore.changed = GatedSignal.new()
+	setmetatable(mockStore, {
+		__index = realStore,
+	})
 
-	mockStore.getState = function()
-		if self.props.shouldBlockUpdates then
-			return self.stateAtLastBlock
-		else
-			return realStore:getState()
-		end
-	end
-
-	mockStore.dispatch = function(self, action)
-		return realStore:dispatch(action)
-	end
-
-	self.changedConnection = realStore.changed:connect(function(...)
-		mockStore.changed:fire(...)
-	end)
+	mockStore.changed = Signal.new()
 
 	self.mockStore = mockStore
 	self._context[storeKey] = mockStore
 
 	self.stateAtLastBlock = nil
+	self.changedConnection = realStore.changed:connect(function(nextState, previousState)
+		if self.props.shouldBlockUpdates then
+			return
+		end
 
-	if self.props.shouldBlockUpdates then
-		self:blockChanges()
-	end
-end
-
-function StoreUpdateGate:blockChanges()
-	self.stateAtLastBlock = self.mockStore:getState()
-	self.mockStore:block()
-end
-
-function StoreUpdateGate:unblockChanges()
-	local oldState = self.stateAtLastBlock
-	local newState = self.mockStore:getState()
-
-	self.stateAtLastBlock = nil
-	self.mockStore:unblock(oldState, newState)
+		mockStore.changed:fire(nextState, previousState)
+	end)
 end
 
 function StoreUpdateGate:didUpdate(oldProps)
 	if self.props.shouldBlockUpdates ~= oldProps.shouldBlockUpdates then
 		if self.props.shouldBlockUpdates then
-			self:blockChanges()
+			self.stateAtLastBlock = self.realStore:getState()
 		else
-			self:unblockChanges()
+			self.mockStore.changed:fire(self.realStore:getState(), self.stateAtLastBlock)
 		end
 	end
 end

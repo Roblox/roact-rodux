@@ -1,9 +1,5 @@
 --[[
-	A limited, simple implementation of a GatedSignal with the addition of a
-	gated condition.
-
-	If the signal has 'isBlocking' set, changes will be witheld until
-	'isBlocking' is reset to false..
+	A limited, simple implementation of a Signal.
 
 	Handlers are fired in order, and (dis)connections are properly handled when
 	executing an event.
@@ -36,23 +32,21 @@ local function immutableRemoveValue(list, removeValue)
 	return new
 end
 
-local GatedSignal = {}
+local Signal = {}
 
-GatedSignal.__index = GatedSignal
+Signal.__index = Signal
 
-function GatedSignal.new()
+function Signal.new()
 	local self = {
-		_listeners = {},
-		_isBlocking = false,
-		_shouldFireWhenUnblocked = false,
+		_listeners = {}
 	}
 
-	setmetatable(self, GatedSignal)
+	setmetatable(self, Signal)
 
 	return self
 end
 
-function GatedSignal:connect(callback)
+function Signal:connect(callback)
 	local listener = {
 		callback = callback,
 		disconnected = false,
@@ -70,12 +64,7 @@ function GatedSignal:connect(callback)
 	}
 end
 
-function GatedSignal:fire(...)
-	if self._isBlocking then
-		self._shouldFireWhenUnblocked = true
-		return
-	end
-
+function Signal:fire(...)
 	for _, listener in ipairs(self._listeners) do
 		if not listener.disconnected then
 			listener.callback(...)
@@ -83,25 +72,4 @@ function GatedSignal:fire(...)
 	end
 end
 
-function GatedSignal:block()
-	if self._isBlocking then
-		return
-	end
-
-	self._isBlocking = true
-end
-
-function GatedSignal:unblock(...)
-	if not self._isBlocking then
-		return
-	end
-
-	self._isBlocking = false
-
-	if self._shouldFireWhenUnblocked then
-		self._shouldFireWhenUnblocked = false
-		self:fire(...)
-	end
-end
-
-return GatedSignal
+return Signal
