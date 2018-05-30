@@ -40,7 +40,11 @@ function StoreUpdateGate:didUpdate(oldProps)
 		if self.props.shouldBlockUpdates then
 			self.stateAtLastBlock = self.realStore:getState()
 		else
-			self.mockStore.changed:fire(self.realStore:getState(), self.stateAtLastBlock)
+			local currentState = self.realStore:getState()
+
+			if currentState ~= self.stateAtLastBlock then
+				self.mockStore.changed:fire(currentState, self.stateAtLastBlock)
+			end
 		end
 	end
 end
