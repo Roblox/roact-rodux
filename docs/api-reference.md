@@ -39,7 +39,7 @@ Both `mapStateToProps` and `mapDispatchToProps` should return a table. These tab
 !!! info
 	`mapStateToProps` can also return a function. When it does, the returned function will be used to retrieve state from the store on each update. This is usually used when working with memoized functions, similar to Redux's supplemental [Reselect](https://github.com/reduxjs/reselect) library.
 
-`connect` returns a function that should called with the component to wrap. This API is sort of funky, but exists as-is for two primary reasons:
+`connect` returns a function that should be called with the component to wrap. This API is sort of funky, but exists as-is for two primary reasons:
 
 * Reusing the same connection for multiple components is useful, and can be used to create abstractions over `connect`.
 * Since both `mapStateToProps` and `mapDispatchToProps` are optional, keeping them separate helps make the Roact-Rodux API cleaner.
@@ -56,7 +56,7 @@ local function MyComponent(props)
 end
 
 MyComponent = RoactRodux.connect(
-	function(state)
+	function(state, props)
 		return {
 			value = state.value,
 		}
@@ -82,7 +82,7 @@ MyComponent = RoactRodux.connect(
 			return state.value
 		end)
 
-		return function(state)
+		return function(state, props)
 			return {
 				value = getValue(state),
 			}

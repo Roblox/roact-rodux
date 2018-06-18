@@ -2,7 +2,7 @@
 Create your store as normal with [Rodux](https://github.com/Roblox/Rodux):
 
 ```lua
-local store = Rodux.Store.new(function(state, action)
+local function reducer(state, action)
 	state = state or {
 		value = 0,
 	}
@@ -14,8 +14,23 @@ local store = Rodux.Store.new(function(state, action)
 	end
 
 	return state
-end)
+end
+
+local store = Rodux.Store.new(reducer)
 ```
+
+## Add a `StoreProvider`
+When you render your Roact application, wrap the top-level component in a `RoactRodux.StoreProvider`:
+
+```lua
+local app = Roact.createElement(RoactRodux.StoreProvider, {
+	store = store,
+}, {
+	Main = Roact.createElement(MyComponent),
+})
+```
+
+This makes your Rodux store available for any components in your app. They'll access that store using the `connect` function.
 
 ## Connect with `connect`
 Use `RoactRodux.connect` to retrieve values from the store and use them in your [Roact](https://github.com/Roblox/Roact) component:
@@ -50,7 +65,7 @@ end
 -- `connect` returns a function, so we call that function, passing in our
 -- component, getting back a new component!
 MyComponent = RoactRodux.connect(
-	function(state)
+	function(state, props)
 		-- mapStateToProps is run every time the store's state updates.
 		-- It's also run whenever the component receives new props.
 		return {
@@ -68,17 +83,6 @@ MyComponent = RoactRodux.connect(
 		}
 	end
 )(MyComponent)
-```
-
-## Add a `StoreProvider`
-Finally, when you render your Roact application, wrap the top-level component in a `RoactRodux.StoreProvider`:
-
-```lua
-local app = Roact.createElement(RoactRodux.StoreProvider, {
-	store = store,
-}, {
-	Main = Roact.createElement(MyComponent),
-})
 ```
 
 Now, whenever the store updates, your connected components will receive updated data and re-render!

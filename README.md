@@ -17,7 +17,7 @@
 
 <div>&nbsp;</div>
 
-Roact-Rodux is an ergonomic binding [Roact](https://github.com/Roblox/roact), a view library, and [Rodux](https://github.com/Roblox/rodux), a state management library.
+Roact-Rodux is an ergonomic binding between [Roact](https://github.com/Roblox/roact), a view library, and [Rodux](https://github.com/Roblox/rodux), a state management library.
 
 It is the recommended way to use the two libraries together, and is similar in scope to [react-redux](https://github.com/reduxjs/react-redux), the equivalent library for React and Redux.
 
