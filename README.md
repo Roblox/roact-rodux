@@ -6,8 +6,8 @@
 	<a href="https://coveralls.io/github/Roblox/roact-rodux?branch=master">
 		<img src="https://coveralls.io/repos/github/Roblox/roact-rodux/badge.svg?branch=master" alt="Coveralls Coverage" />
 	</a>
-	<a href="#">
-		<img src="https://img.shields.io/badge/docs-soon-red.svg" alt="Documentation" />
+	<a href="http://roblox.github.io/roact-rodux">
+		<img src="https://img.shields.io/badge/docs-website-green.svg" alt="Documentation" />
 	</a>
 </div>
 
@@ -17,80 +17,19 @@
 
 <div>&nbsp;</div>
 
-## Installation
-**Roact-Rodux expects to be located inside the same object as [Roact](https://github.com/Roblox/Roact) and [Rodux](https://github.com/Roblox/Rodux). They should be installed into the same place!**
+Roact-Rodux is an ergonomic binding [Roact](https://github.com/Roblox/roact), a view library, and [Rodux](https://github.com/Roblox/rodux), a state management library.
 
-### Method 1: Model File (Roblox Studio)
-* Download the `rbxmx` model file attached to the latest release from the [GitHub releases page](https://github.com/Roblox/roact-rodux/releases).
-* Insert the model into Studio into a place like `ReplicatedStorage`
+It is the recommended way to use the two libraries together, and is similar in scope to [react-redux](https://github.com/reduxjs/react-redux), the equivalent library for React and Redux.
 
-### Method 2: Filesystem
-* Copy the `lib` directory into your codebase
-* Rename the folder to `RoactRodux`
-* Use a plugin like [Rojo](https://github.com/LPGhatguy/rojo) to sync the files into a place
+## [Documentation](http://roblox.github.io/roact-rodux)
+All documentation for Roact-Rodux is available on [the official docs website](http://roblox.github.io/roact-rodux). It includes:
 
-## Usage
-Create your store as normal with [Rodux](https://github.com/Roblox/Rodux):
+* [Installation Instructions](http://roblox.github.io/roact-rodux/installation)
+* [An introduction to Roact-Rodux](http://roblox.github.io/roact-rodux/usage)
+* [An API reference](http://roblox.github.io/roact-rodux/api-reference)
 
-```lua
-local store = Rodux.Store.new(function(state, action)
-	state = state or {
-		value = 0,
-	}
-
-	if action.type == "increment" then
-		return {
-			value = state.value + 1,
-		}
-	end
-
-	return state
-end)
-```
-
-Use `RoactRodux.connect` to inject values into your [Roact](https://github.com/Roblox/Roact) component:
-
-```lua
-local function MyComponent(props)
-	-- Values from Rodux can be accessed just like regular props
-	local value = props.value
-
-	return Roact.createElement("ScreenGui", nil, {
-		Label = Roact.createElement("TextLabel", {
-			-- ...and used in your components!
-			Text = "Current value: " .. value,
-
-			Size = UDim2.new(1, 0, 1, 0),
-		})
-	})
-end
-
--- `connect` accepts a function that passes you your store
--- and expects you to return a table of props for your component
-
--- Here, we immediately assign the result back to MyComponent
-MyComponent = RoactRodux.connect(function(store)
-	local state = store:getState()
-
-	return {
-		value = state.value,
-	}
-end)(MyComponent)
-```
-
-Finally, when you render your Roact application, wrap the top-level component in a `RoactRodux.StoreProvider`:
-
-```lua
-local app = Roact.createElement(RoactRodux.StoreProvider, {
-	store = store,
-}, {
-	Main = Roact.createElement(MyComponent),
-})
-```
-
-Now, whenever the store updates, your connected components will receive updated data and re-render!
-
-In many other cases, Roact-Rodux works just like [react-redux](https://github.com/reactjs/react-redux). The public API is almost identical and most of the best practices from that ecosystem work here as well.
+## Contributing
+Contributions to Roact-Rodux are welcome! Details are available in the [contributing guide](CONTRIBUTING.md).
 
 ## License
 Roact-Rodux is available under the Apache 2.0 license. See [LICENSE](LICENSE) for details.
