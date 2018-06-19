@@ -6,7 +6,7 @@
 	<a href="https://coveralls.io/github/Roblox/roact-rodux?branch=master">
 		<img src="https://coveralls.io/repos/github/Roblox/roact-rodux/badge.svg?branch=master" alt="Coveralls Coverage" />
 	</a>
-	<a href="http://roblox.github.io/roact-rodux">
+	<a href="http://roblox.github.io/roact-rodux/">
 		<img src="https://img.shields.io/badge/docs-website-green.svg" alt="Documentation" />
 	</a>
 </div>
