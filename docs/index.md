@@ -1,0 +1,1 @@
+Roact-Rodux is the official binding layer between [Roact](https://github.com/Roblox/Roact), a view library, and [Rodux](https://github.com/Roblox/Rodux), a state management library.

@@ -1,0 +1,25 @@
+site_name: Roact-Rodux Documentation
+site_url: https://roblox.github.io/roact-rodux/
+repo_name: Roblox/roact-rodux
+repo_url: https://github.com/Roblox/roact-rodux
+
+theme:
+  name: material
+  palette:
+    primary: 'Indigo'
+    accent: 'Indigo'
+
+pages:
+  - Home: index.md
+  - Guide:
+    - Installation: guide/installation.md
+    - Using Roact-Rodux: guide/usage.md
+  - API Reference: api-reference.md
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+  - pymdownx.superfences
