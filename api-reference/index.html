@@ -1,0 +1,612 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+        <link rel="canonical" href="https://roblox.github.io/roact-rodux/api-reference/">
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-0.17.2, mkdocs-material-2.6.6">
+    
+    
+      
+        <title>API Reference - Roact-Rodux Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.78aab2dc.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.6079476c.css">
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="drawer">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="search">
+    <label class="md-overlay" data-md-component="overlay" for="drawer"></label>
+    
+      <a href="#roact-components" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://roblox.github.io/roact-rodux/" title="Roact-Rodux Documentation" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Roact-Rodux Documentation
+              </span>
+              <span class="md-header-nav__topic">
+                API Reference
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/Roblox/roact-rodux/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      Roblox/roact-rodux
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="drawer">
+    <span class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </span>
+    Roact-Rodux Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/Roblox/roact-rodux/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      Roblox/roact-rodux
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Guide
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Guide
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../guide/installation/" title="Installation" class="md-nav__link">
+      Installation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../guide/usage/" title="Using Roact-Rodux" class="md-nav__link">
+      Using Roact-Rodux
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="toc">
+        API Reference
+      </label>
+    
+    <a href="./" title="API Reference" class="md-nav__link md-nav__link--active">
+      API Reference
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#roact-components" title="Roact Components" class="md-nav__link">
+    Roact Components
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#storeprovider" title="StoreProvider" class="md-nav__link">
+    StoreProvider
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" title="Methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#connect" title="connect" class="md-nav__link">
+    connect
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#roact-components" title="Roact Components" class="md-nav__link">
+    Roact Components
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#storeprovider" title="StoreProvider" class="md-nav__link">
+    StoreProvider
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" title="Methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#connect" title="connect" class="md-nav__link">
+    connect
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/Roblox/roact-rodux/edit/master/docs/api-reference.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                  <h1>API Reference</h1>
+                
+                <h2 id="roact-components">Roact Components<a class="headerlink" href="#roact-components" title="Permanent link">&para;</a></h2>
+<h3 id="storeprovider">StoreProvider<a class="headerlink" href="#storeprovider" title="Permanent link">&para;</a></h3>
+<p><code>StoreProvider</code> accepts a Rodux store via the <code>store</code> prop and makes it available to all components rendered under it.</p>
+<p>It's possible to have multiple instances of <code>StoreProvider</code> in the same Roact tree, but most projects using Roact-Rodux will only have one.</p>
+<p><code>StoreProvider</code> is generally at the top of the tree:</p>
+<div class="codehilite"><pre><span></span><span class="n">Roact</span><span class="p">.</span><span class="n">createElement</span><span class="p">(</span><span class="n">RoactRodux</span><span class="p">.</span><span class="n">StoreProvider</span><span class="p">,</span> <span class="p">{</span>
+    <span class="n">store</span> <span class="o">=</span> <span class="n">someStore</span><span class="p">,</span>
+<span class="p">},</span> <span class="p">{</span>
+    <span class="c1">-- Any components created by `App` will be able to connect to someStore by</span>
+    <span class="c1">-- using Roact-Rodux&#39;s `connect` method.</span>
+    <span class="n">App</span> <span class="o">=</span> <span class="n">Roact</span><span class="p">.</span><span class="n">createElement</span><span class="p">(</span><span class="n">App</span><span class="p">),</span>
+<span class="p">})</span>
+</pre></div>
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Due to limitations of Roact, <code>StoreProvider</code> can only have zero or one children. This requirement may be relaxed in the future <a href="https://github.com/Roblox/roact/issues/7">when Roact supports fragments</a>.</p>
+</div>
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
+<h3 id="connect">connect<a class="headerlink" href="#connect" title="Permanent link">&para;</a></h3>
+<p>Connects to the Rodux store attached to the Roact tree by <code>StoreProvider</code>, retrieving data from the store and optionally creating functions to dispatch actions.</p>
+<p><code>connect</code> is a <em>Higher-Order Component</em> (HOC), which means that it wraps an existing component and adds additional functionality to it. Any props passed to the wrapped component will also be passed to the component that <code>connect</code> is wrapping.</p>
+<p><code>connect</code> accepts two functions, both of which are optional:</p>
+<ul>
+<li><code>mapStateToProps</code>, which accepts the store's state as the first argument, as well as the props passed to the component.<ul>
+<li><code>mapStateToProps</code> is run whenever the Rodux store updates, as well as whenever the props passed to your component are updated.</li>
+</ul>
+</li>
+<li><code>mapDispatchToProps</code>, which accepts a function that dispatches actions to your store. It works just like <code>Store:dispatch</code> in Rodux!<ul>
+<li><code>mapDispatchToProps</code> is only run once per component instance.</li>
+</ul>
+</li>
+</ul>
+<p>Both <code>mapStateToProps</code> and <code>mapDispatchToProps</code> should return a table. These tables get merged into the props passed to the wrapped component.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p><code>mapStateToProps</code> can also return a function. When it does, the returned function will be used to retrieve state from the store on each update. This is usually used when working with memoized functions, similar to Redux's supplemental <a href="https://github.com/reduxjs/reselect">Reselect</a> library.</p>
+</div>
+<p><code>connect</code> returns a function that should be called with the component to wrap. This API is sort of funky, but exists as-is for two primary reasons:</p>
+<ul>
+<li>Reusing the same connection for multiple components is useful, and can be used to create abstractions over <code>connect</code>.</li>
+<li>Since both <code>mapStateToProps</code> and <code>mapDispatchToProps</code> are optional, keeping them separate helps make the Roact-Rodux API cleaner.</li>
+</ul>
+<p>Base example:</p>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="kr">function</span> <span class="nf">MyComponent</span><span class="p">(</span><span class="n">props</span><span class="p">)</span>
+    <span class="kr">return</span> <span class="n">Roact</span><span class="p">.</span><span class="n">createElement</span><span class="p">(</span><span class="s2">&quot;TextButton&quot;</span><span class="p">,</span> <span class="p">{</span>
+        <span class="n">Text</span> <span class="o">=</span> <span class="n">props</span><span class="p">.</span><span class="n">value</span><span class="p">,</span>
+
+        <span class="p">[</span><span class="n">Roact</span><span class="p">.</span><span class="n">Event</span><span class="p">.</span><span class="n">Activated</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="p">.</span><span class="n">onClick</span><span class="p">,</span>
+    <span class="p">})</span>
+<span class="kr">end</span>
+
+<span class="n">MyComponent</span> <span class="o">=</span> <span class="n">RoactRodux</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span>
+    <span class="kr">function</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        <span class="kr">return</span> <span class="p">{</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">state</span><span class="p">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="kr">end</span><span class="p">,</span>
+    <span class="kr">function</span><span class="p">(</span><span class="n">dispatch</span><span class="p">)</span>
+        <span class="kr">return</span> <span class="p">{</span>
+            <span class="n">onClick</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+                <span class="n">dispatch</span><span class="p">({</span>
+                    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;increment&quot;</span><span class="p">,</span>
+                <span class="p">})</span>
+            <span class="kr">end</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="kr">end</span>
+<span class="p">)</span>
+</pre></div>
+
+<p>Using the higher-order version of <code>mapStateToProps</code>:</p>
+<div class="codehilite"><pre><span></span><span class="n">MyComponent</span> <span class="o">=</span> <span class="n">RoactRodux</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span>
+    <span class="kr">function</span><span class="p">()</span>
+        <span class="kd">local</span> <span class="n">getValue</span> <span class="o">=</span> <span class="n">memoize</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+            <span class="kr">return</span> <span class="n">state</span><span class="p">.</span><span class="n">value</span>
+        <span class="kr">end</span><span class="p">)</span>
+
+        <span class="kr">return</span> <span class="kr">function</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+            <span class="kr">return</span> <span class="p">{</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">getValue</span><span class="p">(</span><span class="n">state</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="kr">end</span>
+    <span class="kr">end</span>
+<span class="p">)</span>
+</pre></div>
+
+<p>The (very complicated) API signature of <code>connect</code> is:</p>
+<div class="codehilite"><pre><span></span>connect([mapStateToProps, [mapDispatchToProps]]) -&gt; (componentToWrap) -&gt; wrappedComponent
+where
+    mapStateToProps:
+        (storeState, props) -&gt; propsToMerge
+        OR
+        () -&gt; (storeState, props) -&gt; propsToMerge
+    mapDispatchToProps: (dispatchFn) -&gt; propsToMerge
+</pre></div>
+                
+                  
+                
+              
+              
+                
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../guide/usage/" title="Using Roact-Rodux" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Using Roact-Rodux
+              </span>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="http://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.02434462.js"></script>
+      
+      <script>app.initialize({version:"0.17.2",url:{base:".."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>
