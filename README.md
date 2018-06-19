@@ -21,7 +21,7 @@ Roact-Rodux is an ergonomic binding between [Roact](https://github.com/Roblox/ro
 
 It is the recommended way to use the two libraries together, and is similar in scope to [react-redux](https://github.com/reduxjs/react-redux), the equivalent library for React and Redux.
 
-## [Documentation](http://roblox.github.io/roact-rodux)
+## [Documentation](http://roblox.github.io/roact-rodux/)
 All documentation for Roact-Rodux is available on [the official docs website](http://roblox.github.io/roact-rodux). It includes:
 
 * [Installation Instructions](http://roblox.github.io/roact-rodux/installation)
