@@ -1,5 +1,5 @@
 local Roact = require(script.Parent.Parent.Roact)
-local storeKey = require(script.Parent.storeKey)
+local getStore = require(script.Parent.getStore)
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
 
@@ -84,7 +84,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		end
 
 		function Connection:init()
-			self.store = self._context[storeKey]
+			self.store = getStore(self)
 
 			if self.store == nil then
 				local message = formatMessage({
