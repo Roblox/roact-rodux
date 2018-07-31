@@ -1,179 +1,109 @@
 local Roact = require(script.Parent.Parent.Roact)
+
 local storeKey = require(script.Parent.storeKey)
-local shallowEqual = require(script.Parent.shallowEqual)
-local join = require(script.Parent.join)
 
---[[
-	Formats a multi-line message with printf-style placeholders.
-]]
-local function formatMessage(lines, parameters)
-	return table.concat(lines, "\n"):format(unpack(parameters or {}))
-end
-
-local function noop()
-	return nil
-end
-
---[[
-	The stateUpdater accepts props when they update and computes the
-	complete set of props that should be passed to the wrapped component.
-
-	Each connected component will have a stateUpdater created for it.
-
-	stateUpdater is put into the component's state in order for
-	getDerivedStateFromProps to be able to access it. It is not mutated.
-]]
-local function makeStateUpdater(store)
-	return function(nextProps, prevState, mappedStoreState)
-		-- The caller can optionally provide mappedStoreState if it needed that
-		-- value beforehand. Doing so is purely an optimization.
-		if mappedStoreState == nil then
-			mappedStoreState = prevState.mapStateToProps(store:getState(), nextProps)
+local function shallowEqual(a, b)
+	for key, value in pairs(a) do
+		if b[key] ~= value then
+			return false
 		end
-
-		local propsForChild = join(nextProps, mappedStoreState, prevState.mappedStoreDispatch)
-
-		return {
-			mappedStoreState = mappedStoreState,
-			propsForChild = propsForChild,
-		}
 	end
+
+	for key, value in pairs(b) do
+		if a[key] ~= value then
+			return false
+		end
+	end
+
+	return true
 end
 
 --[[
-	mapStateToProps:
-		(storeState, props) -> partialProps
-		OR
-		() -> (storeState, props) -> partialProps
-	mapDispatchToProps: (dispatch) -> partialProps
+	Joins two tables together into a new table
 ]]
-local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
-	local connectTrace = debug.traceback()
+local function join(a, b)
+	local result = {}
 
-	if mapStateToPropsOrThunk ~= nil then
-		assert(typeof(mapStateToPropsOrThunk) == "function", "mapStateToProps must be a function or nil!")
-	else
-		mapStateToPropsOrThunk = noop
+	for key, value in pairs(a) do
+		result[key] = value
 	end
 
-	if mapDispatchToProps ~= nil then
-		assert(typeof(mapDispatchToProps) == "function", "mapDispatchToProps must be a function or nil!")
-	else
-		mapDispatchToProps = noop
+	for key, value in pairs(b) do
+		result[key] = value
 	end
 
-	return function(innerComponent)
-		if innerComponent == nil then
-			local message = formatMessage({
-				"connect returns a function that must be passed a component.",
-				"Check the connection at:",
-				"%s",
-			}, {
-				connectTrace,
-			})
+	return result
+end
 
-			error(message, 2)
+-- A version of 'error' that outputs over multiple lines
+local function errorLines(...)
+	error(table.concat({...}, "\n"))
+end
+
+local function connect(mapStoreToProps)
+	local rootTrace = debug.traceback()
+
+	local mapConnect = function(store, props)
+		local result = mapStoreToProps(store, props)
+
+		if type(result) ~= "table" then
+			errorLines(
+				"mapStoreToProps must return a table! Check the function passed into 'connect' at:",
+				rootTrace
+			)
 		end
 
-		local componentName = ("RoduxConnection(%s)"):format(tostring(innerComponent))
+		return result
+	end
 
-		local Connection = Roact.Component:extend(componentName)
-
-		function Connection.getDerivedStateFromProps(nextProps, prevState)
-			return prevState.stateUpdater(nextProps, prevState)
+	return function(component)
+		if component == nil then
+			error("Expected component to be passed to connection, got nil.")
 		end
 
-		function Connection:init()
-			self.store = self._context[storeKey]
+		local name = ("Connection(%s)"):format(
+			tostring(component)
+		)
+		local Connection = Roact.Component:extend(name)
 
-			if self.store == nil then
-				local message = formatMessage({
-					"Cannot initialize Roact-Rodux connection without being a descendent of StoreProvider!",
-					"Tried to wrap component %q",
-					"Make sure there is a StoreProvider above this component in the tree.",
-				}, {
-					tostring(innerComponent),
-				})
+		function Connection:init(props)
+			local store = self._context[storeKey]
 
-				error(message)
+			if not store then
+				errorLines(
+					"Cannot initialize Roact-Rodux component without being a descendent of StoreProvider!",
+					("Tried to wrap component %q"):format(tostring(component)),
+					"Make sure there is a StoreProvider above this component in the tree."
+				)
 			end
 
-			local storeState = self.store:getState()
-
-			local mapStateToProps = mapStateToPropsOrThunk
-			local mappedStoreState = mapStateToProps(storeState, self.props)
-
-			-- mapStateToPropsOrThunk can return a function instead of a state
-			-- value. In this variant, we keep that value as mapStateToProps
-			-- instead of the original mapStateToProps. This matches react-redux
-			-- and enables connectors to keep instance-level state.
-			if typeof(mappedStoreState) == "function" then
-				mapStateToProps = mappedStoreState
-				mappedStoreState = mapStateToProps(storeState, self.props)
-			end
-
-			if mappedStoreState ~= nil and typeof(mappedStoreState) ~= "table" then
-				local message = formatMessage({
-					"mapStateToProps must either return a table, or return another function that returns a table.",
-					"Instead, it returned %q, which is of type %s.",
-				}, {
-					tostring(mappedStoreState),
-					typeof(mappedStoreState),
-				})
-
-				error(message)
-			end
-
-			local mappedStoreDispatch = mapDispatchToProps(function(...)
-				return self.store:dispatch(...)
-			end)
-
-			local stateUpdater = makeStateUpdater(self.store)
+			self.store = store
 
 			self.state = {
-				-- Combines props, mappedStoreDispatch, and the result of
-				-- mapStateToProps into propsForChild. Stored in state so that
-				-- getDerivedStateFromProps can access it.
-				stateUpdater = stateUpdater,
-
-				-- Used by the store changed connection and stateUpdater to
-				-- construct propsForChild.
-				mapStateToProps = mapStateToProps,
-
-				-- Used by stateUpdater to construct propsForChild.
-				mappedStoreDispatch = mappedStoreDispatch,
-
-				-- Passed directly into the component that Connection is
-				-- wrapping.
-				propsForChild = nil,
+				storeProps = mapConnect(store, props),
 			}
-
-			self.state.propsForChild = stateUpdater(self.props, self.state, mappedStoreState)
 		end
 
 		function Connection:didMount()
-			self.storeChangedConnection = self.store.changed:connect(function(storeState)
-				self:setState(function(prevState, props)
-					local mappedStoreState = prevState.mapStateToProps(storeState, props)
+			self.eventHandle = self.store.changed:connect(function(state)
+				local storeProps = mapConnect(self.store, self.props)
 
-					-- We run this check here so that we only check shallow
-					-- equality with the result of mapStateToProps, and not the
-					-- other props that could be passed through the connector.
-					if shallowEqual(mappedStoreState, prevState.mappedStoreState) then
-						return nil
-					end
-
-					return prevState.stateUpdater(props, prevState, mappedStoreState)
-				end)
+				if not shallowEqual(self.state.storeProps, storeProps) then
+					self:setState({
+						storeProps = storeProps
+					})
+				end
 			end)
 		end
 
 		function Connection:willUnmount()
-			self.storeChangedConnection:disconnect()
+			self.eventHandle:disconnect()
 		end
 
 		function Connection:render()
-			return Roact.createElement(innerComponent, self.state.propsForChild)
+			local props = join(self.props, self.state.storeProps)
+
+			return Roact.createElement(component, props)
 		end
 
 		return Connection
