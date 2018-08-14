@@ -24,9 +24,9 @@ It is the recommended way to use the two libraries together, and is similar in s
 ## [Documentation](http://roblox.github.io/roact-rodux/)
 All documentation for Roact-Rodux is available on [the official docs website](http://roblox.github.io/roact-rodux). It includes:
 
-* [Installation Instructions](http://roblox.github.io/roact-rodux/installation)
-* [An introduction to Roact-Rodux](http://roblox.github.io/roact-rodux/usage)
-* [An API reference](http://roblox.github.io/roact-rodux/api-reference)
+* [Installation Instructions](https://roblox.github.io/roact-rodux/guide/installation/)
+* [An introduction to Roact-Rodux](https://roblox.github.io/roact-rodux/guide/usage/)
+* [An API reference](https://roblox.github.io/roact-rodux/api-reference/)
 
 ## Contributing
 Contributions to Roact-Rodux are welcome! Details are available in the [contributing guide](CONTRIBUTING.md).
