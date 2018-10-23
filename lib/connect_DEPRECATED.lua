@@ -1,4 +1,5 @@
 local Roact = require(script.Parent.Parent.Roact)
+local Logging = require(script.Parent.Logging)
 
 local storeKey = require(script.Parent.storeKey)
 
@@ -55,14 +56,10 @@ local function errorLines(...)
 	error(table.concat({...}, "\n"))
 end
 
-local ConnectDeprecated = {}
-
-ConnectDeprecated._warn = warn
-
-function ConnectDeprecated.connect(mapStoreToProps)
+local function connect_DEPRECATED(mapStoreToProps)
 	local rootTrace = debug.traceback()
 
-	ConnectDeprecated._warn(deprecationWarningMessage:format(rootTrace))
+	Logging.warn(deprecationWarningMessage:format(rootTrace))
 
 	local mapConnect = function(store, props)
 		local result = mapStoreToProps(store, props)
@@ -131,4 +128,4 @@ function ConnectDeprecated.connect(mapStoreToProps)
 	end
 end
 
-return ConnectDeprecated
+return connect_DEPRECATED

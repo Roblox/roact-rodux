@@ -1,14 +1,11 @@
 return function()
-	local ConnectDeprecated = require(script.Parent.ConnectDeprecated)
-
-	local StoreProvider = require(script.Parent.StoreProvider)
-
 	local Roact = require(script.Parent.Parent.Roact)
 	local Rodux = require(script.Parent.Parent.Rodux)
 
-	local function ignoreWarnings()
-		-- noop
-	end
+	local StoreProvider = require(script.Parent.StoreProvider)
+	local Logging = require(script.Parent.Logging)
+
+	local connect_DEPRECATED = require(script.Parent.connect_DEPRECATED)
 
 	local function incrementReducer(state, action)
 		state = state or 0
@@ -25,23 +22,15 @@ return function()
 			return nil
 		end
 
-		local warningCount = 0
-		local lastWarning = nil
+		local logInfo = Logging.capture(function()
+			connect_DEPRECATED(function(store)
+				return {}
+			end)(SomeComponent)
+		end)
 
-		ConnectDeprecated._warn = function(message)
-			warningCount = warningCount + 1
-			lastWarning = message
-		end
-
-		ConnectDeprecated.connect(function(store)
-			return {}
-		end)(SomeComponent)
-
-		expect(warningCount).to.equal(1)
-		expect(lastWarning:find("deprecated")).to.be.ok()
-		expect(lastWarning:find("ConnectDeprecated.spec")).to.be.ok()
-
-		ConnectDeprecated._warn = warn
+		expect(#logInfo.warnings).to.equal(1)
+		expect(logInfo.warnings[1]:find("deprecated")).to.be.ok()
+		expect(logInfo.warnings[1]:find("connect_DEPRECATED.spec")).to.be.ok()
 	end)
 
 	it("should throw if not passed a component", function()
@@ -49,13 +38,11 @@ return function()
 			return {}
 		end
 
-		ConnectDeprecated._warn = ignoreWarnings
-
 		expect(function()
-			ConnectDeprecated.connect(selector)(nil)
+			Logging.capture(function()
+				connect_DEPRECATED(selector)(nil)
+			end)
 		end).to.throw()
-
-		ConnectDeprecated._warn = warn
 	end)
 
 	it("should successfully connect when mounted under a StoreProvider", function()
@@ -65,11 +52,12 @@ return function()
 			return nil
 		end
 
-		ConnectDeprecated._warn = ignoreWarnings
-
-		local ConnectedSomeComponent = ConnectDeprecated.connect(function(store)
-			return {}
-		end)(SomeComponent)
+		local ConnectedSomeComponent
+		Logging.capture(function()
+			ConnectedSomeComponent = connect_DEPRECATED(function(store)
+				return {}
+			end)(SomeComponent)
+		end)
 
 		local tree = Roact.createElement(StoreProvider, {
 			store = store,
@@ -80,8 +68,6 @@ return function()
 		local handle = Roact.mount(tree)
 
 		expect(handle).to.be.ok()
-
-		ConnectDeprecated._warn = warn
 	end)
 
 	it("should fail to mount without a StoreProvider", function()
@@ -89,19 +75,18 @@ return function()
 			return nil
 		end
 
-		ConnectDeprecated._warn = ignoreWarnings
-
-		local ConnectedSomeComponent = ConnectDeprecated.connect(function(store)
-			return {}
-		end)(SomeComponent)
+		local ConnectedSomeComponent
+		Logging.capture(function()
+			ConnectedSomeComponent = connect_DEPRECATED(function(store)
+				return {}
+			end)(SomeComponent)
+		end)
 
 		local tree = Roact.createElement(ConnectedSomeComponent)
 
 		expect(function()
 			Roact.mount(tree)
 		end).to.throw()
-
-		ConnectDeprecated._warn = warn
 	end)
 
 	it("should trigger renders on store changes only with shallow differences", function()
@@ -115,13 +100,14 @@ return function()
 			return nil
 		end
 
-		ConnectDeprecated._warn = ignoreWarnings
-
-		local ConnectedSomeComponent = ConnectDeprecated.connect(function(store)
-			return {
-				value = store:getState()
-			}
-		end)(SomeComponent)
+		local ConnectedSomeComponent
+		Logging.capture(function()
+			ConnectedSomeComponent = connect_DEPRECATED(function(store)
+				return {
+					value = store:getState()
+				}
+			end)(SomeComponent)
+		end)
 
 		local tree = Roact.createElement(StoreProvider, {
 			store = store,
@@ -154,7 +140,5 @@ return function()
 		-- Our component should not re-render, state is the same!
 		expect(store:getState()).to.equal(1)
 		expect(callCount).to.equal(2)
-
-		ConnectDeprecated._warn = warn
 	end)
 end
