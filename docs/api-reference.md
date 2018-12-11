@@ -70,7 +70,7 @@ MyComponent = RoactRodux.connect(
 			end,
 		}
 	end
-)
+)(MyComponent)
 ```
 
 Using the higher-order version of `mapStateToProps`:
@@ -88,7 +88,7 @@ MyComponent = RoactRodux.connect(
 			}
 		end
 	end
-)
+)(MyComponent)
 ```
 
 The (very complicated) API signature of `connect` is:
