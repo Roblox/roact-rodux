@@ -1,0 +1,40 @@
+{
+  "name": "Roact-Rodux Test Place",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+
+      "RoactRodux": {
+        "$path": "lib"
+      },
+
+      "Roact": {
+        "$path": "modules/roact/lib"
+      },
+
+      "Rodux": {
+        "$path": "modules/rodux/lib"
+      },
+
+      "TestEZ": {
+        "$path": "modules/testez/lib"
+      }
+    },
+
+    "HttpService": {
+      "$className": "HttpService",
+      "$properties": {
+        "HttpEnabled": true
+      }
+    },
+
+    "Players": {
+      "$className": "Players",
+      "$properties": {
+        "CharacterAutoLoads": false
+      }
+    }
+  }
+}
