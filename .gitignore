@@ -1,2 +1,6 @@
 /luacov.*
 /site/
+
+# Rotriever
+rotriever.lock
+Packages
