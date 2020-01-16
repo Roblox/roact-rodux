@@ -23,7 +23,7 @@ install:
 
 script:
   - luacheck lib
-  - lua -lluacov spec.lua
+  - lua -lluacov test/lemur.lua
 
 after_success:
   - luacov-coveralls -e $TRAVIS_BUILD_DIR/lua_install

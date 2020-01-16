@@ -23,6 +23,14 @@
       }
     },
 
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+
+      "Run Tests": {
+        "$path": "test/runner.server.lua"
+      }
+    },
+
     "HttpService": {
       "$className": "HttpService",
       "$properties": {
