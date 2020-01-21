@@ -16,14 +16,14 @@ local completed, result = xpcall(function()
 	local TestEZ = require(ReplicatedStorage.TestEZ)
 
 	Roact.setGlobalConfig({
-		-- ["internalTypeChecks"] = true,
-		-- ["typeChecks"] = true,
+		internalTypeChecks = true,
+		typeChecks = true,
 		elementTracing = true,
-		-- ["propValidation"] = true,
+		propValidation = true,
 	})
 
 	local results = TestEZ.TestBootstrap:run(
-		ReplicatedStorage.RoactRodux,
+		{ ReplicatedStorage.RoactRodux },
 		TestEZ.Reporters.TextReporter
 	)
 

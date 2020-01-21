@@ -11,7 +11,7 @@
       },
 
       "Roact": {
-        "$path": "modules/roact/lib"
+        "$path": "modules/roact/src"
       },
 
       "Rodux": {
