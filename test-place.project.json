@@ -7,7 +7,7 @@
       "$className": "ReplicatedStorage",
 
       "RoactRodux": {
-        "$path": "lib"
+        "$path": "src"
       },
 
       "Roact": {

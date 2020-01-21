@@ -1,6 +1,6 @@
 {
   "name": "RoactRodux",
   "tree": {
-    "$path": "lib"
+    "$path": "src"
   }
 }

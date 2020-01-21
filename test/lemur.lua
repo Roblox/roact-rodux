@@ -4,7 +4,7 @@
 
 -- If you add any dependencies, add them to this table so they'll be loaded!
 local LOAD_MODULES = {
-	{"lib", "RoactRodux"},
+	{"src", "RoactRodux"},
 	{"modules/rodux/lib", "Rodux"},
 	{"modules/roact/lib", "Roact"},
 	{"modules/testez/lib", "TestEZ"},

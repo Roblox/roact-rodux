@@ -22,7 +22,7 @@ install:
   - luarocks install luacheck
 
 script:
-  - luacheck lib
+  - luacheck src
   - lua -lluacov test/lemur.lua
 
 after_success:
