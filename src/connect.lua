@@ -155,21 +155,19 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			for key, value in pairs(extraState) do
 				self.state[key] = value
 			end
-		end
 
-		function Connection:didMount()
-			self.storeChangedConnection = self.store.changed:connect(function(storeState)
+			self.storeChangedConnection = self.store.changed:connect(function(updatedState)
 				self:setState(function(prevState, props)
-					local mappedStoreState = prevState.mapStateToProps(storeState, props)
+					local newMappedStoreState = prevState.mapStateToProps(updatedState, props)
 
 					-- We run this check here so that we only check shallow
 					-- equality with the result of mapStateToProps, and not the
 					-- other props that could be passed through the connector.
-					if shallowEqual(mappedStoreState, prevState.mappedStoreState) then
+					if shallowEqual(newMappedStoreState, prevState.mappedStoreState) then
 						return nil
 					end
 
-					return prevState.stateUpdater(props, prevState, mappedStoreState)
+					return prevState.stateUpdater(props, prevState, newMappedStoreState)
 				end)
 			end)
 		end
