@@ -15,7 +15,7 @@
       },
 
       "Rodux": {
-        "$path": "modules/rodux/lib"
+        "$path": "modules/rodux/src"
       },
 
       "TestEZ": {

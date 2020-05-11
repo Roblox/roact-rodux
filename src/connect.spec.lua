@@ -3,6 +3,8 @@ return function()
 
 	local StoreProvider = require(script.Parent.StoreProvider)
 
+	local GlobalConfig = require(script.Parent.GlobalConfig)
+
 	local Roact = require(script.Parent.Parent.Roact)
 	local Rodux = require(script.Parent.Parent.Rodux)
 
@@ -247,5 +249,54 @@ return function()
 		expect(dispatch(fiveThunk)).to.equal(5)
 
 		Roact.unmount(handle)
+	end)
+
+	it("should render parent elements before children when GlobalConfig.newConnectionOrder is true", function()
+		local function mapStateToProps(state)
+			return {
+				count = state.count,
+			}
+		end
+
+		local childWasRenderedFirst = false
+
+		GlobalConfig.scoped({
+			newConnectionOrder = true,
+		}, function()
+			local function ChildComponent(props)
+				if props.count > props.parentCount then
+					childWasRenderedFirst = true
+				end
+			end
+
+			local ConnectedChildComponent = connect(mapStateToProps)(ChildComponent)
+
+			local function ParentComponent(props)
+				return Roact.createElement(ConnectedChildComponent, {
+					parentCount = props.count,
+				})
+			end
+
+			local ConnectedParentComponent = connect(mapStateToProps)(ParentComponent)
+
+			local store = Rodux.Store.new(reducer)
+			local tree = Roact.createElement(StoreProvider, {
+				store = store,
+			}, {
+				parent = Roact.createElement(ConnectedParentComponent),
+			})
+
+			local handle = Roact.mount(tree)
+
+			store:dispatch({ type = "increment" })
+			store:flush()
+
+			store:dispatch({ type = "increment" })
+			store:flush()
+
+			Roact.unmount(handle)
+		end)
+
+		expect(childWasRenderedFirst).to.equal(false)
 	end)
 end

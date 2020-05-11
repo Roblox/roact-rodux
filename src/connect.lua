@@ -3,6 +3,8 @@ local getStore = require(script.Parent.getStore)
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
 
+local config = require(script.Parent.GlobalConfig).get()
+
 --[[
 	Formats a multi-line message with printf-style placeholders.
 ]]
@@ -156,20 +158,41 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 				self.state[key] = value
 			end
 
-			self.storeChangedConnection = self.store.changed:connect(function(updatedState)
-				self:setState(function(prevState, props)
-					local newMappedStoreState = prevState.mapStateToProps(updatedState, props)
+			if config.newConnectionOrder then
+				self.storeChangedConnection = self.store.changed:connect(function(updatedState)
+					self:setState(function(prevState, props)
+						local newMappedStoreState = prevState.mapStateToProps(updatedState, props)
 
-					-- We run this check here so that we only check shallow
-					-- equality with the result of mapStateToProps, and not the
-					-- other props that could be passed through the connector.
-					if shallowEqual(newMappedStoreState, prevState.mappedStoreState) then
-						return nil
-					end
+						-- We run this check here so that we only check shallow
+						-- equality with the result of mapStateToProps, and not the
+						-- other props that could be passed through the connector.
+						if shallowEqual(newMappedStoreState, prevState.mappedStoreState) then
+							return nil
+						end
 
-					return prevState.stateUpdater(props, prevState, newMappedStoreState)
+						return prevState.stateUpdater(props, prevState, newMappedStoreState)
+					end)
 				end)
-			end)
+			end
+		end
+
+		function Connection:didMount()
+			if not config.newConnectionOrder then
+				self.storeChangedConnection = self.store.changed:connect(function(storeState)
+					self:setState(function(prevState, props)
+						local mappedStoreState = prevState.mapStateToProps(storeState, props)
+
+						-- We run this check here so that we only check shallow
+						-- equality with the result of mapStateToProps, and not the
+						-- other props that could be passed through the connector.
+						if shallowEqual(mappedStoreState, prevState.mappedStoreState) then
+							return nil
+						end
+
+						return prevState.stateUpdater(props, prevState, mappedStoreState)
+					end)
+				end)
+			end
 		end
 
 		function Connection:willUnmount()
