@@ -3,7 +3,7 @@ local getStore = require(script.Parent.getStore)
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
 
-local config = require(script.Parent.GlobalConfig).get()
+local TempConfig = require(script.Parent.TempConfig)
 
 --[[
 	Formats a multi-line message with printf-style placeholders.
@@ -158,7 +158,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 				self.state[key] = value
 			end
 
-			if config.newConnectionOrder then
+			if TempConfig.newConnectionOrder then
 				self.storeChangedConnection = self.store.changed:connect(function(updatedState)
 					self:setState(function(prevState, props)
 						local newMappedStoreState = prevState.mapStateToProps(updatedState, props)
@@ -177,7 +177,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		end
 
 		function Connection:didMount()
-			if not config.newConnectionOrder then
+			if not TempConfig.newConnectionOrder then
 				self.storeChangedConnection = self.store.changed:connect(function(storeState)
 					self:setState(function(prevState, props)
 						local mappedStoreState = prevState.mapStateToProps(storeState, props)

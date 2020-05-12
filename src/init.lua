@@ -1,7 +1,7 @@
 local StoreProvider = require(script.StoreProvider)
 local connect = require(script.connect)
 local getStore = require(script.getStore)
-local GlobalConfig = require(script.GlobalConfig)
+local TempConfig = require(script.TempConfig)
 
 return {
 	StoreProvider = StoreProvider,
@@ -9,5 +9,5 @@ return {
 	UNSTABLE_getStore = getStore,
 	UNSTABLE_connect2 = connect,
 
-	setGlobalConfig = GlobalConfig.set,
+	TEMP_CONFIG = TempConfig,
 }
