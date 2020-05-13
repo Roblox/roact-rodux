@@ -6,6 +6,8 @@ return function()
 	local Roact = require(script.Parent.Parent.Roact)
 	local Rodux = require(script.Parent.Parent.Rodux)
 
+	local TempConfig = require(script.Parent.TempConfig)
+
 	local function noop()
 		return nil
 	end
@@ -250,6 +252,9 @@ return function()
 	end)
 
 	it("should render parent elements before children", function()
+		local oldNewConnectionOrder = TempConfig.newConnectionOrder
+		TempConfig.newConnectionOrder = true
+
 		local function mapStateToProps(state)
 			return {
 				count = state.count,
@@ -292,5 +297,7 @@ return function()
 		Roact.unmount(handle)
 
 		expect(childWasRenderedFirst).to.equal(false)
+
+		TempConfig.newConnectionOrder = oldNewConnectionOrder
 	end)
 end
