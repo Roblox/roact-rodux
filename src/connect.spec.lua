@@ -300,4 +300,54 @@ return function()
 
 		TempConfig.newConnectionOrder = oldNewConnectionOrder
 	end)
+
+	it("should render child elements before children when TempConfig.newConnectionOrder is false", function()
+		local oldNewConnectionOrder = TempConfig.newConnectionOrder
+		TempConfig.newConnectionOrder = false
+
+		local function mapStateToProps(state)
+			return {
+				count = state.count,
+			}
+		end
+
+		local childWasRenderedFirst = false
+
+		local function ChildComponent(props)
+			if props.count > props.parentCount then
+				childWasRenderedFirst = true
+			end
+		end
+
+		local ConnectedChildComponent = connect(mapStateToProps)(ChildComponent)
+
+		local function ParentComponent(props)
+			return Roact.createElement(ConnectedChildComponent, {
+				parentCount = props.count,
+			})
+		end
+
+		local ConnectedParentComponent = connect(mapStateToProps)(ParentComponent)
+
+		local store = Rodux.Store.new(reducer)
+		local tree = Roact.createElement(StoreProvider, {
+			store = store,
+		}, {
+			parent = Roact.createElement(ConnectedParentComponent),
+		})
+
+		local handle = Roact.mount(tree)
+
+		store:dispatch({ type = "increment" })
+		store:flush()
+
+		store:dispatch({ type = "increment" })
+		store:flush()
+
+		Roact.unmount(handle)
+
+		expect(childWasRenderedFirst).to.equal(true)
+
+		TempConfig.newConnectionOrder = oldNewConnectionOrder
+	end)
 end
