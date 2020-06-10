@@ -18,11 +18,17 @@ end
 
 function StoreProvider:init(props)
 	self.store = props.store
-	self._context[storeKey] = props.store
+	if props.Provider == nil then
+		self.Provider = StoreContext.Provider
+		self._context[storeKey] = props.store
+	else
+		self.Provider = props.Provider
+	end
+
 end
 
 function StoreProvider:render()
-	return Roact.createElement(StoreContext.Provider, {
+	return Roact.createElement(self.Provider, {
 		value = self.store
 	}, self.props[Roact.Children])
 end

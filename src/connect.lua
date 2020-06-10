@@ -64,7 +64,10 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		mapDispatchToProps = noop
 	end
 
-	return function(innerComponent)
+
+
+
+	return function(innerComponent, Consumer)
 		if innerComponent == nil then
 			local message = formatMessage({
 				"connect returns a function that must be passed a component.",
@@ -87,6 +90,10 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			end
 		end
 
+		function Connection.validateProps(props)
+			return true
+		end
+
 		function Connection:createStoreConnection()
 			self.storeChangedConnection = self.store.changed:connect(function(storeState)
 				self:setState(function(prevState, props)
@@ -104,8 +111,12 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			end)
 		end
 
-		function Connection:init()
-			self.store = getStore(self)
+		function Connection:init(props)
+			if Consumer == nil then
+				self.store = getStore(self)
+			else
+				self.store = props.store
+			end
 
 			if self.store == nil then
 				local message = formatMessage({
@@ -193,8 +204,20 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		function Connection:render()
 			return Roact.createElement(innerComponent, self.state.propsForChild)
 		end
-
-		return Connection
+		
+		if Consumer == nil then
+			return Connection
+		else 
+			return function(props)
+				return Roact.createElement(Consumer, {
+					render = function(store)
+						return Roact.createElement(Connection, {
+							store = store
+						})
+					end
+				})
+			end
+		end
 	end
 end
 
