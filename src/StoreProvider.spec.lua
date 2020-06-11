@@ -34,17 +34,33 @@ return function()
 		local store = Rodux.Store.new(function()
 			return 0
 		end)
+
+		local consumedStore1 = nil
+		local consumedStore2 = nil
+
+
 		local element = Roact.createElement(StoreProvider, {
 			store = store,
 			Provider = StoreContext.Provider
 		}, {
-			test1 = Roact.createElement("ScreenGui", nil, {}),
-			test2 = Roact.createElement("ScreenGui", nil, {})
+			test1 = Roact.createElement(StoreContext.Consumer, {
+				render = function(store)
+					consumedStore1 = store
+				end
+			}),
+			test2 = Roact.createElement(StoreContext.Consumer, {
+				render = function(store)
+					consumedStore2 = store
+				end
+			}),
 		})
 
 		expect(element).to.be.ok()
 
 		local handle = Roact.mount(element, nil, "StoreProvider-test")
+
+		expect(consumedStore1).to.be.equal(store)
+		expect(consumedStore2).to.be.equal(store)
 
 		Roact.unmount(handle)
 		store:destruct()
