@@ -90,10 +90,6 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			end
 		end
 
-		function Connection.validateProps(props)
-			return true
-		end
-
 		function Connection:createStoreConnection()
 			self.storeChangedConnection = self.store.changed:connect(function(storeState)
 				self:setState(function(prevState, props)
