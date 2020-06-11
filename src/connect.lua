@@ -112,11 +112,8 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		end
 
 		function Connection:init(props)
-			if Consumer == nil then
-				self.store = getStore(self)
-			else
-				self.store = props.store
-			end
+			--Roact.createElement(Consumer, )
+			self.store = props.store
 
 			if self.store == nil then
 				local message = formatMessage({
@@ -205,18 +202,14 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			return Roact.createElement(innerComponent, self.state.propsForChild)
 		end
 		
-		if Consumer == nil then
-			return Connection
-		else 
-			return function(props)
-				return Roact.createElement(Consumer, {
-					render = function(store)
-						return Roact.createElement(Connection, {
-							store = store
-						})
-					end
-				})
-			end
+		return function(props)
+			return Roact.createElement(Consumer, {
+				render = function(store)
+					local innerProps = props
+					innerProps["store"] = store
+					return Roact.createElement(Connection, innerProps)
+				end
+			})
 		end
 	end
 end
