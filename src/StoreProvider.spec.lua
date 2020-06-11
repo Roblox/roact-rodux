@@ -32,17 +32,27 @@ return function()
 		local store = Rodux.Store.new(function()
 			return 0
 		end)
+
+		local TestComponent = Roact.Component:extend("TestComponent")
+		local count = 0
+
+		function TestComponent:render()
+			count = count + 1
+		end
+
+
 		local element = Roact.createElement(StoreProvider, {
 			store = store
 		}, {
-			test1 = Roact.createElement("ScreenGui", nil, {}),
-			test2 = Roact.createElement("ScreenGui", nil, {})
+			test1 = Roact.createElement(TestComponent),
+			test2 = Roact.createElement(TestComponent)
 		})
 
 		expect(element).to.be.ok()
 
 		local handle = Roact.mount(element, nil, "StoreProvider-test")
 
+		expect(count).to.be.equal(2)
 		Roact.unmount(handle)
 		store:destruct()
 	end)
