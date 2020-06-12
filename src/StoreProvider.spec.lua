@@ -3,7 +3,7 @@ return function()
 
 	local Roact = require(script.Parent.Parent.Roact)
 	local Rodux = require(script.Parent.Parent.Rodux)
-	local folder = Instance.new("Folder")
+	
 
 	it("should be instantiable as a component", function()
 		local store = Rodux.Store.new(function()
@@ -33,6 +33,8 @@ return function()
 		local store = Rodux.Store.new(function()
 			return 0
 		end)
+
+		local folder = Instance.new("Folder")
 
 		local element = Roact.createElement(StoreProvider, {
 			store = store
