@@ -18,7 +18,7 @@ function StoreProvider:init(props)
 end
 
 function StoreProvider:render()
-	return Roact.createFragment(self.props[Roact.Children])
+	return Roact.oneChild(self.props[Roact.Children])
 end
 
 return StoreProvider
