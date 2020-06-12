@@ -1,5 +1,4 @@
 local Roact = require(script.Parent.Parent.Roact)
-local getStore = require(script.Parent.getStore)
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
 local StoreContext = require(script.Parent.StoreContext)
