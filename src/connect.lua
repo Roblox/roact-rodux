@@ -2,6 +2,7 @@ local Roact = require(script.Parent.Parent.Roact)
 local getStore = require(script.Parent.getStore)
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
+local StoreContext = require(script.Parent.StoreContext)
 
 local TempConfig = require(script.Parent.TempConfig)
 
@@ -67,7 +68,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 
 
 
-	return function(innerComponent, Consumer)
+	return function(innerComponent)
 		if innerComponent == nil then
 			local message = formatMessage({
 				"connect returns a function that must be passed a component.",
@@ -86,7 +87,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 
 		function Connection.getDerivedStateFromProps(nextProps, prevState)
 			if prevState.stateUpdater ~= nil then
-				return prevState.stateUpdater(nextProps, prevState)
+				return prevState.stateUpdater(nextProps.innerProps, prevState)
 			end
 		end
 
@@ -108,7 +109,6 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		end
 
 		function Connection:init(props)
-			--Roact.createElement(Consumer, )
 			self.store = props.store
 
 			if self.store == nil then
@@ -126,7 +126,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			local storeState = self.store:getState()
 
 			local mapStateToProps = mapStateToPropsOrThunk
-			local mappedStoreState = mapStateToProps(storeState, self.props)
+			local mappedStoreState = mapStateToProps(storeState, self.props.innerProps)
 
 			-- mapStateToPropsOrThunk can return a function instead of a state
 			-- value. In this variant, we keep that value as mapStateToProps
@@ -134,7 +134,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			-- and enables connectors to keep instance-level state.
 			if typeof(mappedStoreState) == "function" then
 				mapStateToProps = mappedStoreState
-				mappedStoreState = mapStateToProps(storeState, self.props)
+				mappedStoreState = mapStateToProps(storeState, self.props.innerProps)
 			end
 
 			if mappedStoreState ~= nil and typeof(mappedStoreState) ~= "table" then
@@ -173,7 +173,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 				propsForChild = nil,
 			}
 
-			local extraState = stateUpdater(self.props, self.state, mappedStoreState)
+			local extraState = stateUpdater(self.props.innerProps, self.state, mappedStoreState)
 
 			for key, value in pairs(extraState) do
 				self.state[key] = value
@@ -199,11 +199,12 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		end
 		
 		return function(props)
-			return Roact.createElement(Consumer, {
+			return Roact.createElement(StoreContext.Consumer, {
 				render = function(store)
-					local innerProps = props
-					innerProps["store"] = store
-					return Roact.createElement(Connection, innerProps)
+					return Roact.createElement(Connection, {
+						innerProps = props,
+						store = store
+					})
 				end
 			})
 		end

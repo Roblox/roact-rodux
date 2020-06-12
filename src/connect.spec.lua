@@ -75,13 +75,11 @@ return function()
 			end
 		end
 
-		local StoreContext = Roact.createContext()
-		local ConnectedSomeComponent = connect(mapStateToProps)(NoopComponent, StoreContext.Consumer)
+		local ConnectedSomeComponent = connect(mapStateToProps)(NoopComponent)
 
 		local store = Rodux.Store.new(reducer)
 		local tree = Roact.createElement(StoreProvider, {
 			store = store,
-			Provider = StoreContext.Provider
 		}, {
 			someComponent = Roact.createElement(ConnectedSomeComponent),
 		})
@@ -98,13 +96,11 @@ return function()
 			end
 		end
 
-		local StoreContext = Roact.createContext()
-		local ConnectedSomeComponent = connect(mapStateToProps)(NoopComponent, StoreContext.Consumer)
+		local ConnectedSomeComponent = connect(mapStateToProps)(NoopComponent)
 
 		local store = Rodux.Store.new(reducer)
 		local tree = Roact.createElement(StoreProvider, {
-			store = store,
-			Provider = StoreContext.Provider
+			store = store
 		}, {
 			someComponent = Roact.createElement(ConnectedSomeComponent),
 		})
@@ -119,13 +115,11 @@ return function()
 			return "nah"
 		end
 
-		local StoreContext = Roact.createContext()
-		local ConnectedSomeComponent = connect(mapStateToProps)(NoopComponent, StoreContext.Consumer)
+		local ConnectedSomeComponent = connect(mapStateToProps)(NoopComponent)
 
 		local store = Rodux.Store.new(reducer)
 		local tree = Roact.createElement(StoreProvider, {
 			store = store,
-			Provider = StoreContext.Provider
 		}, {
 			someComponent = Roact.createElement(ConnectedSomeComponent),
 		})
@@ -147,13 +141,11 @@ return function()
 			renderCount = renderCount + 1
 		end
 
-		local StoreContext = Roact.createContext()
-		local ConnectedSomeComponent = connect(mapStateToProps)(SomeComponent, StoreContext.Consumer)
+		local ConnectedSomeComponent = connect(mapStateToProps)(SomeComponent)
 
 		local store = Rodux.Store.new(reducer)
 		local tree = Roact.createElement(StoreProvider, {
 			store = store,
-			Provider = StoreContext.Provider
 		}, {
 			someComponent = Roact.createElement(ConnectedSomeComponent),
 		})
@@ -192,13 +184,11 @@ return function()
 			renderCount = renderCount + 1
 		end
 
-		local StoreContext = Roact.createContext()
-		local ConnectedSomeComponent = connect(nil, mapDispatchToProps)(SomeComponent, StoreContext.Consumer)
+		local ConnectedSomeComponent = connect(nil, mapDispatchToProps)(SomeComponent)
 
 		local store = Rodux.Store.new(reducer)
 		local tree = Roact.createElement(StoreProvider, {
 			store = store,
-			Provider = StoreContext.Provider
 		}, {
 			someComponent = Roact.createElement(ConnectedSomeComponent),
 		})
@@ -243,14 +233,12 @@ return function()
 			}
 		end
 
-		local StoreContext = Roact.createContext()
-		local ConnectedSomeComponent = connect(nil, mapDispatchToProps)(SomeComponent, StoreContext.Consumer)
+		local ConnectedSomeComponent = connect(nil, mapDispatchToProps)(SomeComponent)
 
 		-- We'll use the thunk middleware, as it should always return its result
 		local store = Rodux.Store.new(reducer, nil, { Rodux.thunkMiddleware })
 		local tree = Roact.createElement(StoreProvider, {
 			store = store,
-			Provider = StoreContext.Provider
 		}, {
 			someComponent = Roact.createElement(ConnectedSomeComponent)
 		})
@@ -275,7 +263,6 @@ return function()
 		end)
 
 		it("should render parent elements before children", function()
-			print("Test 1")
 			local function mapStateToProps(state)
 				return {
 					count = state.count,
@@ -290,8 +277,7 @@ return function()
 				end
 			end
 
-			local StoreContext = Roact.createContext()
-			local ConnectedChildComponent = connect(mapStateToProps)(ChildComponent, StoreContext.Consumer)
+			local ConnectedChildComponent = connect(mapStateToProps)(ChildComponent)
 
 			local function ParentComponent(props)
 				return Roact.createElement(ConnectedChildComponent, {
@@ -299,12 +285,11 @@ return function()
 				})
 			end
 
-			local ConnectedParentComponent = connect(mapStateToProps)(ParentComponent, StoreContext.Consumer)
+			local ConnectedParentComponent = connect(mapStateToProps)(ParentComponent)
 
 			local store = Rodux.Store.new(reducer)
 			local tree = Roact.createElement(StoreProvider, {
 				store = store,
-				Provider = StoreContext.Provider
 			}, {
 				parent = Roact.createElement(ConnectedParentComponent),
 			})
@@ -335,7 +320,6 @@ return function()
 		end)
 
 		it("should render child elements before children when TempConfig.newConnectionOrder is false", function()
-			print("Test 2")
 			local function mapStateToProps(state)
 				return {
 					count = state.count,
@@ -350,8 +334,7 @@ return function()
 				end
 			end
 
-			local StoreContext = Roact.createContext()
-			local ConnectedChildComponent = connect(mapStateToProps)(ChildComponent, StoreContext.Consumer)
+			local ConnectedChildComponent = connect(mapStateToProps)(ChildComponent)
 
 			local function ParentComponent(props)
 				return Roact.createElement(ConnectedChildComponent, {
@@ -359,12 +342,11 @@ return function()
 				})
 			end
 
-			local ConnectedParentComponent = connect(mapStateToProps)(ParentComponent, StoreContext.Consumer)
+			local ConnectedParentComponent = connect(mapStateToProps)(ParentComponent)
 
 			local store = Rodux.Store.new(reducer)
 			local tree = Roact.createElement(StoreProvider, {
-				store = store,
-				Provider = StoreContext.Provider
+				store = store
 			}, {
 				parent = Roact.createElement(ConnectedParentComponent),
 			})
