@@ -48,14 +48,9 @@ return function()
 
 		local handle = Roact.mount(element, folder, "StoreProvider-test")
 
-		local children = folder:GetChildren()
-		local count = 0
-
-		for i, v in ipairs(children) do
-			count  = count + 1
-		end
-
-		expect(count).to.be.equal(3)
+		expect(folder:FindFirstChild("test1")).to.be.ok()
+		expect(folder:FindFirstChild("test2")).to.be.ok()
+		expect(folder:FindFirstChild("test3")).to.be.ok()
 
 		Roact.unmount(handle)
 		store:destruct()
