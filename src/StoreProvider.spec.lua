@@ -3,15 +3,13 @@ return function()
 
 	local Roact = require(script.Parent.Parent.Roact)
 	local Rodux = require(script.Parent.Parent.Rodux)
-	local StoreContext = Roact.createContext()
 
 	it("should be instantiable as a component", function()
 		local store = Rodux.Store.new(function()
 			return 0
 		end)
 		local element = Roact.createElement(StoreProvider, {
-			store = store,
-			Provider = StoreContext.Provider
+			store = store
 		})
 
 		expect(element).to.be.ok()

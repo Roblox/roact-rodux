@@ -100,7 +100,7 @@ return function()
 
 		local store = Rodux.Store.new(reducer)
 		local tree = Roact.createElement(StoreProvider, {
-			store = store
+			store = store,
 		}, {
 			someComponent = Roact.createElement(ConnectedSomeComponent),
 		})
@@ -346,7 +346,7 @@ return function()
 
 			local store = Rodux.Store.new(reducer)
 			local tree = Roact.createElement(StoreProvider, {
-				store = store
+				store = store,
 			}, {
 				parent = Roact.createElement(ConnectedParentComponent),
 			})

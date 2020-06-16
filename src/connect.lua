@@ -64,9 +64,6 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		mapDispatchToProps = noop
 	end
 
-
-
-
 	return function(innerComponent)
 		if innerComponent == nil then
 			local message = formatMessage({
@@ -202,7 +199,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 				render = function(store)
 					return Roact.createElement(Connection, {
 						innerProps = props,
-						store = store
+						store = store,
 					})
 				end
 			})
