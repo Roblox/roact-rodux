@@ -13,8 +13,7 @@ function StoreProvider.validateProps(props)
 end
 
 function StoreProvider:init(props)
-	local store = props.store
-	self._context[storeKey] = store
+	self._context[storeKey] = props.store
 end
 
 function StoreProvider:render()
