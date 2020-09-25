@@ -3,7 +3,7 @@ name = "roblox/roact-rodux"
 author = "Roblox"
 license = "Apache-2.0"
 content_root = "src"
-version = "0.2.2"
+version = "0.2.3"
 
 [dependencies]
 Roact = "github.com/roblox/roact@1.2"
