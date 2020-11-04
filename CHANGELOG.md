@@ -2,7 +2,7 @@
 
 ## Current master
 
-## 0.2.2 (2020-09-25)
+## 0.2.3 (2020-09-25)
 * Removed the temporary newConnectionOrder config.
 
 ## 0.2.2 (2020-05-14)
