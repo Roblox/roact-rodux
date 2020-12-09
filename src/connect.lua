@@ -58,8 +58,9 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		mapStateToPropsOrThunk = noop
 	end
 
+	local mapDispatchType = typeof(mapDispatchToProps)
 	if mapDispatchToProps ~= nil then
-		assert(typeof(mapDispatchToProps) == "function", "mapDispatchToProps must be a function or nil!")
+		assert(mapDispatchType == "function" or mapDispatchType == "table", "mapDispatchToProps must be a function, table, or nil!")
 	else
 		mapDispatchToProps = noop
 	end
@@ -145,9 +146,24 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 				error(message)
 			end
 
-			local mappedStoreDispatch = mapDispatchToProps(function(...)
+			local function dispatch(...)
 				return self.store:dispatch(...)
-			end)
+			end
+
+			local mappedStoreDispatch
+			if mapDispatchType == "table" then
+				mappedStoreDispatch = {}
+
+				for key, actionCreator in pairs(mapDispatchToProps) do
+					assert(typeof(actionCreator) == "function", "mapDispatchToProps must contain function values!")
+
+					mappedStoreDispatch[key] = function(...)
+						dispatch(actionCreator(...))
+					end
+				end
+			else -- is function
+				mappedStoreDispatch = mapDispatchToProps(dispatch)
+			end
 
 			local stateUpdater = makeStateUpdater(self.store)
 
