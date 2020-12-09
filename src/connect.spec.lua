@@ -223,7 +223,7 @@ return function()
 		local mapDispatchToProps = {
 			increment = function()
 				return {
-					type = 'increment'
+					type = "increment"
 				}
 			end
 		}
