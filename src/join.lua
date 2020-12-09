@@ -1,9 +1,7 @@
 local function join(...)
 	local result = {}
 
-	for i = 1, select("#", ...) do
-		local source = select(i, ...)
-
+	for _, source in pairs({...}) do
 		if source ~= nil then
 			for key, value in pairs(source) do
 				result[key] = value
