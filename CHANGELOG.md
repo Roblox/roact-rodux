@@ -1,6 +1,7 @@
 # RoactRodux Changelog
 
 ## Current master
+* Use Github Actions for CI
 
 ## 0.2.3 (2020-09-25)
 * Removed the temporary newConnectionOrder config.
