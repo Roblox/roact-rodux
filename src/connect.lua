@@ -155,13 +155,13 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 				mappedStoreDispatch = {}
 
 				for key, actionCreator in pairs(mapDispatchToProps) do
-					assert(typeof(actionCreator) == "function", "mapDispatchToProps must contain function values!")
+					assert(typeof(actionCreator) == "function", "mapDispatchToProps must contain function values")
 
 					mappedStoreDispatch[key] = function(...)
 						dispatch(actionCreator(...))
 					end
 				end
-			else -- is function
+			elseif mapDispatchType == "function" then
 				mappedStoreDispatch = mapDispatchToProps(dispatch)
 			end
 
