@@ -1,6 +1,8 @@
 # RoactRodux Changelog
 
-## Current master
+## Unreleased
+* Switch to Roact's better-supported `createContext` feature [#38](https://github.com/roblox/roact-rodux/pulls/38)
+* As a consequence of the above, remove `UNSTABLE_getStore` API
 
 ## 0.2.2 (2020-05-14)
 * Changed order of connection to store so that Parent components are connected to the store before their children.
