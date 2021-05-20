@@ -3,7 +3,6 @@ return function()
 
 	local Roact = require(script.Parent.Parent.Roact)
 	local Rodux = require(script.Parent.Parent.Rodux)
-	
 
 	it("should be instantiable as a component", function()
 		local store = Rodux.Store.new(function()
