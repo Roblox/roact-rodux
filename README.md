@@ -1,7 +1,7 @@
 <h1 align="center">Roact-Rodux</h1>
 <div align="center">
-	<a href="https://travis-ci.org/Roblox/roact-rodux">
-		<img src="https://api.travis-ci.org/Roblox/roact-rodux.svg?branch=master" alt="Travis-CI Build Status" />
+	<a href="https://github.com/Roblox/roact-rodux/actions">
+		<img src="https://github.com/Roblox/roact-rodux/workflows/CI/badge.svg" alt="GitHub Actions Build Status" />
 	</a>
 	<a href="https://coveralls.io/github/Roblox/roact-rodux?branch=master">
 		<img src="https://coveralls.io/repos/github/Roblox/roact-rodux/badge.svg?branch=master" alt="Coveralls Coverage" />
