@@ -1,8 +1,7 @@
 # RoactRodux Changelog
 
 ## Current master
-* Added feature to parameter `mapDispatchToProps` as an optional table with action creators.
-	* The parameter could store a dictionary of functions returning actions which automatically get wrapped with the dispatch callback.
+* Added overload for function `mapDispatchToProps` to directly accept a table containing action creators.
 
 ## 0.2.2 (2020-05-14)
 * Changed order of connection to store so that Parent components are connected to the store before their children.
