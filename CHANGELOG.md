@@ -2,6 +2,10 @@
 
 ## Current master
 * Added overload for function `mapDispatchToProps` to directly accept a table containing action creators.
+* Use Github Actions for CI
+
+## 0.2.3 (2020-09-25)
+* Removed the temporary newConnectionOrder config.
 
 ## 0.2.2 (2020-05-14)
 * Changed order of connection to store so that Parent components are connected to the store before their children.

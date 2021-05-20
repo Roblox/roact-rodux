@@ -6,8 +6,6 @@ return function()
 	local Roact = require(script.Parent.Parent.Roact)
 	local Rodux = require(script.Parent.Parent.Rodux)
 
-	local TempConfig = require(script.Parent.TempConfig)
-
 	local function noop()
 		return nil
 	end
@@ -288,117 +286,48 @@ return function()
 		Roact.unmount(handle)
 	end)
 
-	describe("TempConfig.newConnectionOrder = true", function()
-		local oldNewConnectionOrder
-		beforeAll(function()
-			oldNewConnectionOrder = TempConfig.newConnectionOrder
-			TempConfig.newConnectionOrder = true
-		end)
+	it("should render parent elements before children", function()
+		local function mapStateToProps(state)
+			return {
+				count = state.count,
+			}
+		end
 
-		afterAll(function()
-			TempConfig.newConnectionOrder = oldNewConnectionOrder
-		end)
+		local childWasRenderedFirst = false
 
-		it("should render parent elements before children", function()
-			local function mapStateToProps(state)
-				return {
-					count = state.count,
-				}
+		local function ChildComponent(props)
+			if props.count > props.parentCount then
+				childWasRenderedFirst = true
 			end
+		end
 
-			local childWasRenderedFirst = false
+		local ConnectedChildComponent = connect(mapStateToProps)(ChildComponent)
 
-			local function ChildComponent(props)
-				if props.count > props.parentCount then
-					childWasRenderedFirst = true
-				end
-			end
-
-			local ConnectedChildComponent = connect(mapStateToProps)(ChildComponent)
-
-			local function ParentComponent(props)
-				return Roact.createElement(ConnectedChildComponent, {
-					parentCount = props.count,
-				})
-			end
-
-			local ConnectedParentComponent = connect(mapStateToProps)(ParentComponent)
-
-			local store = Rodux.Store.new(reducer)
-			local tree = Roact.createElement(StoreProvider, {
-				store = store,
-			}, {
-				parent = Roact.createElement(ConnectedParentComponent),
+		local function ParentComponent(props)
+			return Roact.createElement(ConnectedChildComponent, {
+				parentCount = props.count,
 			})
+		end
 
-			local handle = Roact.mount(tree)
+		local ConnectedParentComponent = connect(mapStateToProps)(ParentComponent)
 
-			store:dispatch({ type = "increment" })
-			store:flush()
+		local store = Rodux.Store.new(reducer)
+		local tree = Roact.createElement(StoreProvider, {
+			store = store,
+		}, {
+			parent = Roact.createElement(ConnectedParentComponent),
+		})
 
-			store:dispatch({ type = "increment" })
-			store:flush()
+		local handle = Roact.mount(tree)
 
-			Roact.unmount(handle)
+		store:dispatch({ type = "increment" })
+		store:flush()
 
-			expect(childWasRenderedFirst).to.equal(false)
-		end)
-	end)
+		store:dispatch({ type = "increment" })
+		store:flush()
 
-	describe("TempConfig.newConnectionOrder = false", function()
-		local oldNewConnectionOrder
-		beforeAll(function()
-			oldNewConnectionOrder = TempConfig.newConnectionOrder
-			TempConfig.newConnectionOrder = false
-		end)
+		Roact.unmount(handle)
 
-		afterAll(function()
-			TempConfig.newConnectionOrder = oldNewConnectionOrder
-		end)
-
-		it("should render child elements before children when TempConfig.newConnectionOrder is false", function()
-			local function mapStateToProps(state)
-				return {
-					count = state.count,
-				}
-			end
-
-			local childWasRenderedFirst = false
-
-			local function ChildComponent(props)
-				if props.count > props.parentCount then
-					childWasRenderedFirst = true
-				end
-			end
-
-			local ConnectedChildComponent = connect(mapStateToProps)(ChildComponent)
-
-			local function ParentComponent(props)
-				return Roact.createElement(ConnectedChildComponent, {
-					parentCount = props.count,
-				})
-			end
-
-			local ConnectedParentComponent = connect(mapStateToProps)(ParentComponent)
-
-			local store = Rodux.Store.new(reducer)
-			local tree = Roact.createElement(StoreProvider, {
-				store = store,
-			}, {
-				parent = Roact.createElement(ConnectedParentComponent),
-			})
-
-			local handle = Roact.mount(tree)
-
-			store:dispatch({ type = "increment" })
-			store:flush()
-
-			store:dispatch({ type = "increment" })
-			store:flush()
-
-			Roact.unmount(handle)
-
-			expect(childWasRenderedFirst).to.equal(true)
-		end)
+		expect(childWasRenderedFirst).to.equal(false)
 	end)
 end
