@@ -7,7 +7,7 @@ local LOAD_MODULES = {
 	{"src", "RoactRodux"},
 	{"modules/rodux/src", "Rodux"},
 	{"modules/roact/src", "Roact"},
-	{"modules/testez/lib", "TestEZ"},
+	{"modules/testez/src", "TestEZ"},
 }
 
 -- This makes sure we can load Lemur and other libraries that depend on init.lua

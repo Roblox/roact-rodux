@@ -3,6 +3,11 @@
 ## Unreleased
 * Switch to Roact's better-supported `createContext` feature [#38](https://github.com/roblox/roact-rodux/pulls/38)
 * As a consequence of the above, remove `UNSTABLE_getStore` API
+* Added color schemes for documentation based on user preference ([#44](https://github.com/Roblox/roact-rodux/pull/44)).
+* Use Github Actions for CI
+
+## 0.2.3 (2020-09-25)
+* Removed the temporary newConnectionOrder config.
 
 ## 0.2.2 (2020-05-14)
 * Changed order of connection to store so that Parent components are connected to the store before their children.
