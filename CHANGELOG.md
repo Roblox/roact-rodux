@@ -2,6 +2,7 @@
 
 ## Current master
 * Added overload for function `mapDispatchToProps` to directly accept a table containing action creators.
+* Added color schemes for documentation based on user preference ([#44](https://github.com/Roblox/roact-rodux/pull/44)).
 * Use Github Actions for CI
 
 ## 0.2.3 (2020-09-25)

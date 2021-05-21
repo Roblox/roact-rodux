@@ -8,6 +8,7 @@ theme:
   palette:
     primary: 'Indigo'
     accent: 'Indigo'
+    scheme: preference
 
 pages:
   - Home: index.md
