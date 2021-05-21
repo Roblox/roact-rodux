@@ -58,7 +58,10 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 
 	local mapDispatchType = typeof(mapDispatchToProps)
 	if mapDispatchToProps ~= nil then
-		assert(mapDispatchType == "function" or mapDispatchType == "table", "mapDispatchToProps must be a function, table, or nil!")
+		assert(
+			mapDispatchType == "function" or mapDispatchType == "table",
+			"mapDispatchToProps must be a function, table, or nil!"
+		)
 	else
 		mapDispatchToProps = noop
 	end
