@@ -1,7 +1,12 @@
 # RoactRodux Changelog
 
+
 ## Current master
 * Added overload for function `mapDispatchToProps` to directly accept a table containing action creators.
+
+## Unreleased
+* Switch to Roact's better-supported `createContext` feature [#38](https://github.com/roblox/roact-rodux/pulls/38)
+* As a consequence of the above, remove `UNSTABLE_getStore` API
 * Added color schemes for documentation based on user preference ([#44](https://github.com/Roblox/roact-rodux/pull/44)).
 * Use Github Actions for CI
 
