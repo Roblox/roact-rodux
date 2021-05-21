@@ -183,7 +183,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		function Connection:render()
 			return Roact.createElement(innerComponent, self.state.propsForChild)
 		end
-		
+
 		return function(props)
 			return Roact.createElement(StoreContext.Consumer, {
 				render = function(store)
