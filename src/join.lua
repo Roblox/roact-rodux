@@ -3,7 +3,6 @@ local function join(...)
 
 	for i = 1, select("#", ...) do
 		local source = select(i, ...)
-
 		if source ~= nil then
 			for key, value in pairs(source) do
 				result[key] = value

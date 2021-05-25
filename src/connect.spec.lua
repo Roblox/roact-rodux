@@ -45,6 +45,12 @@ return function()
 			connect(nil, function() end)
 		end)
 
+		it("should accept one table of action creators", function()
+			connect(nil, {
+				foo = function() end
+			})
+		end)
+
 		it("should throw if not passed a component", function()
 			local selector = function(store)
 				return {}
@@ -207,6 +213,37 @@ return function()
 
 		expect(dispatchCount).to.equal(1)
 		expect(renderCount).to.equal(1)
+
+		Roact.unmount(handle)
+	end)
+
+	it("should dispatch the action using a table of action creators", function()
+		local mapDispatchToProps = {
+			increment = function()
+				return {
+					type = "increment"
+				}
+			end
+		}
+
+		local function SomeComponent(props)
+			props.increment()
+		end
+
+		local ConnectedSomeComponent = connect(nil, mapDispatchToProps)(SomeComponent)
+
+		local store = Rodux.Store.new(reducer)
+		local tree = Roact.createElement(StoreProvider, {
+			store = store,
+		}, {
+			someComponent = Roact.createElement(ConnectedSomeComponent),
+		})
+
+		local handle = Roact.mount(tree)
+
+		store.changed:connect(function(state)
+			expect(state.count).to.equal(1)
+		end)
 
 		Roact.unmount(handle)
 	end)
