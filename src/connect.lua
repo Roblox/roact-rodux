@@ -203,16 +203,20 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			return Roact.createElement(innerComponent, self.state.propsForChild)
 		end
 
-		return function(props)
+		local ConnectedComponent = Roact.Component:extend(componentName)
+
+		function ConnectedComponent:render()
 			return Roact.createElement(StoreContext.Consumer, {
 				render = function(store)
 					return Roact.createElement(Connection, {
-						innerProps = props,
+						innerProps = self.props,
 						store = store,
 					})
 				end
 			})
 		end
+
+		return ConnectedComponent
 	end
 end
 
