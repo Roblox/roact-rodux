@@ -330,4 +330,23 @@ return function()
 
 		expect(childWasRenderedFirst).to.equal(false)
 	end)
+
+	it("should allow fields to be assigned on connected components", function()
+		local function mapStateToProps(state)
+			return {
+				count = state.count,
+			}
+		end
+
+		local ConnectedSomeComponent = connect(mapStateToProps)(NoopComponent)
+
+		expect(function()
+			ConnectedSomeComponent.SomeEnum = {
+				Value = 1,
+			}
+		end).never.to.throw()
+
+		expect(ConnectedSomeComponent.SomeEnum).to.be.ok()
+		expect(ConnectedSomeComponent.SomeEnum.Value).to.equal(1)
+	end)
 end
