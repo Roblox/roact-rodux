@@ -349,4 +349,40 @@ return function()
 		expect(ConnectedSomeComponent.SomeEnum).to.be.ok()
 		expect(ConnectedSomeComponent.SomeEnum.Value).to.equal(1)
 	end)
+
+	-- Issue https://github.com/Roblox/roact-rodux/issues/48
+	it("should never pass the store and innerProps to `mapStateToProps`", function()
+		local somePropValue = {}
+		local lastMappedProps = nil
+		local function mapStateToProps(state, props)
+			lastMappedProps = props
+			expect(props.store).to.equal(nil)
+			expect(props.innerProps).to.equal(nil)
+			expect(props.somePropName).to.equal(somePropValue)
+			return {
+				count = state.count,
+			}
+		end
+		local ConnectedComponent = connect(mapStateToProps)(NoopComponent)
+
+		local store = Rodux.Store.new(reducer)
+		local tree = Roact.createElement(StoreProvider, {
+			store = store,
+		}, {
+			parent = Roact.createElement(ConnectedComponent, {
+				somePropName = somePropValue,
+			}),
+		})
+
+		local handle = Roact.mount(tree)
+
+		store:dispatch({ type = "increment" })
+		store:flush()
+
+		expect(lastMappedProps.store).to.equal(nil)
+		expect(lastMappedProps.innerProps).to.equal(nil)
+		expect(lastMappedProps.somePropName).to.equal(somePropValue)
+
+		Roact.unmount(handle)
+	end)
 end
