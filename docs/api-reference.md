@@ -17,9 +17,6 @@ Roact.createElement(RoactRodux.StoreProvider, {
 })
 ```
 
-!!! warning
-	Due to limitations of Roact, `StoreProvider` can only have zero or one children. This requirement may be relaxed in the future [when Roact supports fragments](https://github.com/Roblox/roact/issues/7).
-
 ## Methods
 
 ### connect
