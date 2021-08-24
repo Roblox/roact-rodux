@@ -358,7 +358,7 @@ return function()
 			lastMappedProps = props
 			expect(props.store).to.equal(nil)
 			expect(props.innerProps).to.equal(nil)
-			expect(lastMappedProps.somePropName).to.equal(somePropValue)
+			expect(props.somePropName).to.equal(somePropValue)
 			return {
 				count = state.count,
 			}
@@ -378,6 +378,10 @@ return function()
 
 		store:dispatch({ type = "increment" })
 		store:flush()
+
+		expect(lastMappedProps.store).to.equal(nil)
+		expect(lastMappedProps.innerProps).to.equal(nil)
+		expect(lastMappedProps.somePropName).to.equal(somePropValue)
 
 		Roact.unmount(handle)
 	end)
