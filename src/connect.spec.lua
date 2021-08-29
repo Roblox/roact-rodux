@@ -47,7 +47,7 @@ return function()
 
 		it("should accept one table of action creators", function()
 			connect(nil, {
-				foo = function() end
+				foo = function() end,
 			})
 		end)
 
@@ -221,9 +221,9 @@ return function()
 		local mapDispatchToProps = {
 			increment = function()
 				return {
-					type = "increment"
+					type = "increment",
 				}
-			end
+			end,
 		}
 
 		local function SomeComponent(props)
@@ -264,7 +264,7 @@ return function()
 
 		local function mapDispatchToProps(dispatch)
 			return {
-				dispatch = dispatch
+				dispatch = dispatch,
 			}
 		end
 
@@ -275,7 +275,7 @@ return function()
 		local tree = Roact.createElement(StoreProvider, {
 			store = store,
 		}, {
-			someComponent = Roact.createElement(ConnectedSomeComponent)
+			someComponent = Roact.createElement(ConnectedSomeComponent),
 		})
 
 		local handle = Roact.mount(tree)
