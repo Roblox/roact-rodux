@@ -5,8 +5,6 @@
 	We target Lemur, Roblox Studio, and Roblox-CLI.
 ]]
 
--- luacheck: globals __LEMUR__
-
 local isRobloxCli, ProcessService = pcall(game.GetService, game, "ProcessService")
 
 local completed, result = xpcall(function()
