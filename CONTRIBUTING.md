@@ -17,7 +17,7 @@ To get started working on RoactRodux, you'll need:
 * Lua 5.1
 * [LuaFileSystem](https://keplerproject.github.io/luafilesystem/) (`luarocks install luafilesystem`)
 * [LuaCov](https://keplerproject.github.io/luacov) (`luarocks install luacov`)
-* [Foreman](https://github.com/Roblox/foreman) (`cargo install foreman`)
+* [Foreman](https://github.com/Roblox/foreman) ([installation instructions](https://github.com/Roblox/foreman#installation))
 * [Selene](https://github.com/Kampfkarren/selene) (`foreman install`)
 * [StyLua](https://github.com/JohnnyMorganz/StyLua) (`foreman install` -- you only need to run it once)
 
