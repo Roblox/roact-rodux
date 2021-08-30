@@ -15,7 +15,6 @@ Just like bug reports, take a peak at the issue tracker for duplicates before op
 To get started working on RoactRodux, you'll need:
 * Git
 * Lua 5.1
-* [Rust](https://www.rust-lang.org/tools/install) 
 * [LuaFileSystem](https://keplerproject.github.io/luafilesystem/) (`luarocks install luafilesystem`)
 * [LuaCov](https://keplerproject.github.io/luacov) (`luarocks install luacov`)
 * [Foreman](https://github.com/Roblox/foreman) (`cargo install foreman`)
