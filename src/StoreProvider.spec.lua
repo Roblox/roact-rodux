@@ -9,7 +9,7 @@ return function()
 			return 0
 		end)
 		local element = Roact.createElement(StoreProvider, {
-			store = store
+			store = store,
 		})
 
 		expect(element).to.be.ok()
@@ -36,11 +36,11 @@ return function()
 		local folder = Instance.new("Folder")
 
 		local element = Roact.createElement(StoreProvider, {
-			store = store
+			store = store,
 		}, {
 			test1 = Roact.createElement("Frame"),
 			test2 = Roact.createElement("Frame"),
-			test3 = Roact.createElement("Frame")
+			test3 = Roact.createElement("Frame"),
 		})
 
 		expect(element).to.be.ok()

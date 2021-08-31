@@ -212,7 +212,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 						innerProps = self.props,
 						store = store,
 					})
-				end
+				end,
 			})
 		end
 
