@@ -3,8 +3,8 @@ name = "roblox/roact-rodux"
 author = "Roblox"
 license = "Apache-2.0"
 content_root = "src"
-version = "0.3.0"
+version = "0.4.0"
 
 [dependencies]
-Roact = "github.com/roblox/roact@1.3"
+Roact = "github.com/roblox/roact@1.4"
 Rodux = "github.com/roblox/rodux@1.0"

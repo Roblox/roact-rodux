@@ -1,7 +1,10 @@
 # RoactRodux Changelog
 
 # Unreleased Changes
+
+## 0.4.0 (2021-09-02)
 * Fixed `connect` to always pass the right props, instead of sending the store to `mapDispatchToProps` ([#50](https://github.com/roblox/roact-rodux/pulls/50))
+* Change resulting component from `connect` back to a stateful component ([#49](https://github.com/roblox/roact-rodux/pulls/49))
 
 ## 0.3.0 (2021-05-25)
 * Added overload for function `mapDispatchToProps` to directly accept a table containing action creators [#42](https://github.com/roblox/roact-rodux/pulls/42)
