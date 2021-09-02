@@ -1,5 +1,5 @@
 [package]
-name = "roblox/roact-rodux"
+name = "RoactRodux"
 author = "Roblox"
 license = "Apache-2.0"
 content_root = "src"
