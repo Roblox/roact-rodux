@@ -2,6 +2,9 @@
 
 # Unreleased Changes
 
+## 0.4.1 (2021-09-23)
+* Updated `StoreProvider` to accept `Roact.oneChild[self.props[Roact.Children]]` as its child, rather than `self.props[Roact.Children]` ([#55](https://github.com/Roblox/roact-rodux/pull/55))
+
 ## 0.4.0 (2021-09-02)
 * Fixed `connect` to always pass the right props, instead of sending the store to `mapDispatchToProps` ([#50](https://github.com/roblox/roact-rodux/pulls/50))
 * Change resulting component from `connect` back to a stateful component ([#49](https://github.com/roblox/roact-rodux/pulls/49))
