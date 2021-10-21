@@ -196,7 +196,10 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 		end
 
 		function Connection:willUnmount()
-			self.storeChangedConnection:disconnect()
+			if self.storeChangedConnection then
+				self.storeChangedConnection:disconnect()
+				self.storeChangedConnection = nil
+			end
 		end
 
 		function Connection:render()
