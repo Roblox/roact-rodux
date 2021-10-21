@@ -38,8 +38,8 @@ jobs:
     - name: install code quality tools
       uses: rojo-rbx/setup-foreman@v1
       with:
-        version: "^1.0.0"
-        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        version: "^1.0.1"
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: code quality
       shell: bash
