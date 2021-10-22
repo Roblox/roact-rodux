@@ -4,6 +4,7 @@ author = "Roblox"
 license = "Apache-2.0"
 content_root = "src"
 version = "0.4.2"
+files = ["*", "!*.spec.lua"]
 
 [dependencies]
 Roact = "github.com/roblox/roact@1.4"
