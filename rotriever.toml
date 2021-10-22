@@ -7,4 +7,4 @@ version = "0.4.1"
 
 [dependencies]
 Roact = "github.com/roblox/roact@1.4"
-Rodux = "github.com/roblox/rodux@1.0"
+Rodux = "github.com/roblox/rodux@3.0"
