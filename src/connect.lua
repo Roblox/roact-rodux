@@ -2,6 +2,7 @@ local Roact = require(script.Parent.Parent.Roact)
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
 local StoreContext = require(script.Parent.StoreContext)
+local getComponentName = require(script.Parent.getComponentName)
 
 --[[
 	Formats a multi-line message with printf-style placeholders.
@@ -79,7 +80,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			error(message, 2)
 		end
 
-		local componentName = ("RoduxConnection(%s)"):format(tostring(innerComponent))
+		local componentName = ("RoduxConnection(%s)"):format(getComponentName(innerComponent))
 
 		local Connection = Roact.Component:extend(componentName)
 
@@ -115,7 +116,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 					"Tried to wrap component %q",
 					"Make sure there is a StoreProvider above this component in the tree.",
 				}, {
-					tostring(innerComponent),
+					getComponentName(innerComponent),
 				})
 
 				error(message)
