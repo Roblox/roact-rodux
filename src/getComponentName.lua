@@ -20,15 +20,17 @@ local REACT_STRICT_MODE_TYPE = ReactSymbols.REACT_STRICT_MODE_TYPE
 local REACT_SUSPENSE_TYPE = ReactSymbols.REACT_SUSPENSE_TYPE
 local REACT_SUSPENSE_LIST_TYPE = ReactSymbols.REACT_SUSPENSE_LIST_TYPE
 local REACT_LAZY_TYPE = ReactSymbols.REACT_LAZY_TYPE
-local REACT_BLOCK_TYPE = ReactSymbols.REACT_BLOCK_TYPE
 
 local getComponentName
 
 local function getWrappedName(outerType, innerType, wrapperName)
 	-- deviation: Account for indexing into function
 	local functionName = getComponentName(innerType)
-	return outerType.displayName
-		or (functionName ~= "" and string.format("%s(%s)", wrapperName, functionName) or wrapperName)
+	return outerType.displayName or (functionName ~= "" and string.format(
+		"%s(%s)",
+		wrapperName,
+		functionName
+	) or wrapperName)
 end
 
 local function getContextName(type)
@@ -43,7 +45,7 @@ function getComponentName(type)
 	local typeofType = typeof(type)
 
 	if typeofType == "function" then
-		local name = debug.info(type, "n")
+		local name = debug.info and debug.info(type, "n") or (debug.getinfo and debug.getinfo(type, "n").name)
 		-- when name = (null) we want it to be treated as nil, not as an empty (truthy) string
 		if name and #name > 0 then
 			return name
