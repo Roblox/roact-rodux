@@ -26,11 +26,8 @@ local getComponentName
 local function getWrappedName(outerType, innerType, wrapperName)
 	-- deviation: Account for indexing into function
 	local functionName = getComponentName(innerType)
-	return outerType.displayName or (functionName ~= "" and string.format(
-		"%s(%s)",
-		wrapperName,
-		functionName
-	) or wrapperName)
+	return outerType.displayName
+		or (functionName ~= "" and string.format("%s(%s)", wrapperName, functionName) or wrapperName)
 end
 
 local function getContextName(type)
