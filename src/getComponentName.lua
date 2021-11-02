@@ -45,7 +45,9 @@ function getComponentName(type)
 	local typeofType = typeof(type)
 
 	if typeofType == "function" then
-		local name = debug.info and debug.info(type, "n") or (debug.getinfo and debug.getinfo(type, "n").name)
+		-- try using Roblox Lua's debug.info before falling back to lua5.1 debug.getinfo
+		-- selene: allow(incorrect_standard_library_use)
+		local name = type(debug.info) == "function" and debug.info(type, "n") or debug.getinfo(type, "n").source
 		-- when name = (null) we want it to be treated as nil, not as an empty (truthy) string
 		if name and #name > 0 then
 			return name
