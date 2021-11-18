@@ -44,13 +44,17 @@ function getComponentName(type)
 	if typeofType == "function" then
 		-- try using Roblox Lua's debug.info before falling back to lua5.1 debug.getinfo
 		-- selene: allow(incorrect_standard_library_use)
-		local name = type(debug.info) == "function" and debug.info(type, "n") or debug.getinfo(type, "n").source
+		local name = type(debug.info) == "function" and debug.info(type, "n") or debug.getinfo(type).name
 		-- when name = (null) we want it to be treated as nil, not as an empty (truthy) string
 		if name and #name > 0 then
 			return name
-		else
-			return nil
 		end
+		-- if we can't get the name, try for the source file where the function was created
+		local source = type(debug.info) == "function" and debug.info(type, "sl") or debug.getinfo(type).source
+		if source and #source > 0 then
+			return source
+		end
+		return nil
 	end
 
 	if typeofType == "string" then
