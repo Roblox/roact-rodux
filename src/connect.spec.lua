@@ -286,51 +286,6 @@ return function()
 		Roact.unmount(handle)
 	end)
 
-	it("should render parent elements before children", function()
-		local function mapStateToProps(state)
-			return {
-				count = state.count,
-			}
-		end
-
-		local childWasRenderedFirst = false
-
-		local function ChildComponent(props)
-			if props.count > props.parentCount then
-				childWasRenderedFirst = true
-			end
-		end
-
-		local ConnectedChildComponent = connect(mapStateToProps)(ChildComponent)
-
-		local function ParentComponent(props)
-			return Roact.createElement(ConnectedChildComponent, {
-				parentCount = props.count,
-			})
-		end
-
-		local ConnectedParentComponent = connect(mapStateToProps)(ParentComponent)
-
-		local store = Rodux.Store.new(reducer)
-		local tree = Roact.createElement(StoreProvider, {
-			store = store,
-		}, {
-			parent = Roact.createElement(ConnectedParentComponent),
-		})
-
-		local handle = Roact.mount(tree)
-
-		store:dispatch({ type = "increment" })
-		store:flush()
-
-		store:dispatch({ type = "increment" })
-		store:flush()
-
-		Roact.unmount(handle)
-
-		expect(childWasRenderedFirst).to.equal(false)
-	end)
-
 	it("should allow fields to be assigned on connected components", function()
 		local function mapStateToProps(state)
 			return {
