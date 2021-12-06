@@ -188,7 +188,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 						return nil
 					end
 
-					return prevState.stateUpdater(props, prevState, mappedStoreState)
+					return prevState.stateUpdater(props.innerProps, prevState, mappedStoreState)
 				end)
 			end
 
