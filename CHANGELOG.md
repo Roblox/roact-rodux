@@ -1,7 +1,7 @@
 # RoactRodux Changelog
 
 # Unreleased Changes
-## 0.4.2 (2021-12-03)
+## 0.5.0 (2021-12-06)
 * Move store connection back to didMount to align more closely with ReactRedux and Roact api.
 * Conditionally update child mappedProps on didMount if the mappedStoreState has changed between init and mount. This should prevent components from receiving stale rodux state.
 
