@@ -20,10 +20,7 @@ local completed, result = xpcall(function()
 		propValidation = true,
 	})
 
-	local results = TestEZ.TestBootstrap:run(
-		{ ReplicatedStorage.RoactRodux },
-		TestEZ.Reporters.TextReporter
-	)
+	local results = TestEZ.TestBootstrap:run({ ReplicatedStorage.RoactRodux }, TestEZ.Reporters.TextReporter)
 
 	return results.failureCount == 0 and 0 or 1
 end, debug.traceback)

@@ -4,10 +4,10 @@
 
 -- If you add any dependencies, add them to this table so they'll be loaded!
 local LOAD_MODULES = {
-	{"src", "RoactRodux"},
-	{"modules/rodux/src", "Rodux"},
-	{"modules/roact/src", "Roact"},
-	{"modules/testez/src", "TestEZ"},
+	{ "src", "RoactRodux" },
+	{ "modules/rodux/src", "Rodux" },
+	{ "modules/roact/src", "Roact" },
+	{ "modules/testez/src", "TestEZ" },
 }
 
 -- This makes sure we can load Lemur and other libraries that depend on init.lua
