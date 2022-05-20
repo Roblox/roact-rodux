@@ -1,6 +1,6 @@
 [package]
 name = "RoactRodux"
-author = "Roblox"
+authors = ["Roblox"]
 license = "Apache-2.0"
 content_root = "src"
 version = "0.5.1"
