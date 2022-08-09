@@ -8,4 +8,4 @@ files = ["*", "!*.spec.lua"]
 
 [dependencies]
 Roact = "github.com/roblox/roact@1.4"
-Rodux = "github.com/roblox/rodux@3.0"
+Rodux = "github.com/roblox/rodux@4.0.0-rc.0"
