@@ -1,8 +1,6 @@
 return function()
 	local shallowEqual = require(script.Parent.shallowEqual)
 
-	local thisShouldError: number = "not a number"
-
 	it("should compare dictionaries", function()
 		local a = {
 			a = "a",
