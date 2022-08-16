@@ -22,9 +22,7 @@ jobs:
         version: "^1.0.1"
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Install wally dependencies
-      shell: bash
-      run: wally install
+    # TODO: install package dependencies
 
     - name: Download global Roblox types
       shell: bash

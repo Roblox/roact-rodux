@@ -10,12 +10,6 @@
 # MkDocs build output
 /site/
 
-# Package manager
-wally.lock
+# Rotriever
 rotriever.lock
 Packages
-
-# Misc OS and editor files
-.DS_Store
-.vscode
-.idea
