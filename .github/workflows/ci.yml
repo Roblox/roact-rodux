@@ -10,6 +10,34 @@ on:
     - master
 
 jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install code quality tools
+      uses: Roblox/setup-foreman@v1
+      with:
+        version: "^1.0.1"
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Install wally dependencies
+      shell: bash
+      run: wally install
+
+    - name: Download global Roblox types
+      shell: bash
+      run: curl -s -O https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/master/scripts/globalTypes.d.lua
+
+    - name: Generate sourcemap for LSP
+      shell: bash
+      run: rojo sourcemap default.project.json -o sourcemap.json
+
+    - name: Analyze
+      shell: bash
+      run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua src/ Packages/
+
   test:
     runs-on: ubuntu-latest
 

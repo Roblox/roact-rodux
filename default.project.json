@@ -1,6 +1,10 @@
 {
   "name": "RoactRodux",
   "tree": {
-    "$path": "src"
+    "$className": "Folder",
+    "$path": "Packages",
+    "RoactRodux": {
+      "$path": "src"
+    }
   }
 }

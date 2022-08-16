@@ -87,6 +87,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			if prevState.stateUpdater ~= nil then
 				return prevState.stateUpdater(nextProps.innerProps, prevState)
 			end
+			return nil
 		end
 
 		function Connection:init(props)
