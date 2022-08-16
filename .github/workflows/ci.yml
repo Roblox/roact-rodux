@@ -18,7 +18,7 @@ jobs:
       with:
         submodules: true
 
-    - name: Install code quality tools
+    - name: Install foreman tools
       uses: Roblox/setup-foreman@v1
       with:
         version: "^1.0.1"
@@ -34,7 +34,7 @@ jobs:
 
     - name: Analyze
       shell: bash
-      run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua src/ Packages/
+      run: luau-lsp analyze --sourcemap=sourcemap.json --defs=globalTypes.d.lua --defs=testez.d.lua src/
 
   test:
     runs-on: ubuntu-latest
