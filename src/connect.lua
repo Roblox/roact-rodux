@@ -1,7 +1,32 @@
+--!strict
 local Roact = require(script.Parent.Parent.Roact)
+local Rodux = require(script.Parent.Parent.Rodux)
+
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
 local StoreContext = require(script.Parent.StoreContext)
+
+local types = require(script.Parent.types)
+
+type ThunkfulDispatchProp<State> = types.ThunkfulDispatchProp<State>
+
+type MapStateToProps<StoreState, Props, PartialProps> = (StoreState, Props) -> PartialProps?
+
+export type MapStateToPropsOrThunk<StoreState, Props, PartialProps> =
+	MapStateToProps<StoreState, Props, PartialProps>
+	| () -> MapStateToProps<StoreState, Props, PartialProps>
+
+type ActionCreator<Type, Action, Args...> = Rodux.ActionCreator<Type, Action, Args...>
+
+type ActionCreatorMap = {
+	[string]: ActionCreator<any, any, ...any>,
+}
+
+type MapDispatchToPropsThunk<StoreState, PartialProps> = (ThunkfulDispatchProp<StoreState>) -> PartialProps?
+
+export type MapDispatchToProps<StoreState, PartialProps> =
+	MapDispatchToPropsThunk<StoreState, PartialProps>
+	| ActionCreatorMap
 
 --[[
 	Formats a multi-line message with printf-style placeholders.
@@ -47,7 +72,17 @@ end
 		() -> (storeState, props) -> partialProps
 	mapDispatchToProps: (dispatch) -> partialProps
 ]]
-local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
+local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatchPartialProps>(
+	mapStateToPropsOrThunk: MapStateToPropsOrThunk<
+		StoreState,
+		Props,
+		MappedStatePartialProps
+	>?,
+	mapDispatchToProps: MapDispatchToProps<
+		StoreState,
+		MappedDispatchPartialProps
+	>?
+)
 	local connectTrace = debug.traceback()
 
 	if mapStateToPropsOrThunk ~= nil then
@@ -107,7 +142,8 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 
 			local storeState = self.store:getState()
 
-			local mapStateToProps = mapStateToPropsOrThunk
+			local mapStateToProps =
+				mapStateToPropsOrThunk :: MapStateToProps<StoreState, Props, MappedStatePartialProps>
 			local mappedStoreState = mapStateToProps(storeState, self.props.innerProps)
 
 			-- mapStateToPropsOrThunk can return a function instead of a state
@@ -135,11 +171,11 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 				return self.store:dispatch(...)
 			end
 
-			local mappedStoreDispatch
+			local mappedStoreDispatch: any
 			if mapDispatchType == "table" then
 				mappedStoreDispatch = {}
 
-				for key, actionCreator in pairs(mapDispatchToProps) do
+				for key, actionCreator in pairs(mapDispatchToProps :: ActionCreatorMap) do
 					assert(typeof(actionCreator) == "function", "mapDispatchToProps must contain function values")
 
 					mappedStoreDispatch[key] = function(...)
@@ -147,7 +183,9 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 					end
 				end
 			elseif mapDispatchType == "function" then
-				mappedStoreDispatch = mapDispatchToProps(dispatch)
+				mappedStoreDispatch = (
+					mapDispatchToProps :: MapDispatchToPropsThunk<StoreState, MappedDispatchPartialProps>
+				)((dispatch :: any) :: ThunkfulDispatchProp<StoreState>)
 			end
 
 			local stateUpdater = makeStateUpdater(self.store)
