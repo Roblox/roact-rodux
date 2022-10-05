@@ -6,7 +6,7 @@ return function()
 	local Roact = require(script.Parent.Parent.Roact)
 	local Rodux = require(script.Parent.Parent.Rodux)
 
-	type AnyActionCreator = Rodux.ActionCreator<any, any>,
+	type AnyActionCreator = Rodux.ActionCreator<any, any>
 
 	local function noop()
 		return nil
