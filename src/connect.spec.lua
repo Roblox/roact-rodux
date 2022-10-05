@@ -6,8 +6,6 @@ return function()
 	local Roact = require(script.Parent.Parent.Roact)
 	local Rodux = require(script.Parent.Parent.Rodux)
 
-	type AnyActionCreator = Rodux.ActionCreator<any, any>
-
 	local function noop()
 		return nil
 	end
@@ -49,7 +47,7 @@ return function()
 
 		it("should accept one table of action creators", function()
 			connect(nil, {
-				foo = (function() end :: any) :: AnyActionCreator,
+				foo = (function() end :: any) :: Rodux.ActionCreator<any, any>,
 			})
 		end)
 
@@ -225,7 +223,7 @@ return function()
 				return {
 					type = "increment",
 				}
-			end :: any) :: AnyActionCreator,
+			end :: any) :: Rodux.ActionCreator<any, any>,
 		}
 
 		local function SomeComponent(props)
