@@ -1,6 +1,5 @@
 --!strict
 local Roact = require(script.Parent.Parent.Roact)
-local Rodux = require(script.Parent.Parent.Rodux)
 
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
@@ -9,24 +8,10 @@ local StoreContext = require(script.Parent.StoreContext)
 local types = require(script.Parent.types)
 
 type ThunkfulDispatchProp<State> = types.ThunkfulDispatchProp<State>
-
-type MapStateToProps<StoreState, Props, PartialProps> = (StoreState, Props) -> PartialProps?
-
-export type MapStateToPropsOrThunk<StoreState, Props, PartialProps> =
-	MapStateToProps<StoreState, Props, PartialProps>
-	| () -> MapStateToProps<StoreState, Props, PartialProps>
-
-type ActionCreator<Type, Action, Args...> = Rodux.ActionCreator<Type, Action, Args...>
-
-type ActionCreatorMap = {
-	[string]: ActionCreator<any, any, ...any>,
-}
-
-type MapDispatchToPropsThunk<StoreState, PartialProps> = (ThunkfulDispatchProp<StoreState>) -> PartialProps?
-
-export type MapDispatchToProps<StoreState, PartialProps> =
-	MapDispatchToPropsThunk<StoreState, PartialProps>
-	| ActionCreatorMap
+type MapStateToProps<StoreState, Props, PartialProps> = types.MapStateToProps<StoreState, Props, PartialProps>
+type MapStateToPropsOrThunk<StoreState, Props, PartialProps> = types.MapStateToPropsOrThunk<StoreState, Props, PartialProps>
+type MapDispatchToPropsThunk<StoreState, PartialProps> = types.MapDispatchToPropsThunk<StoreState, PartialProps>
+type MapDispatchToProps<StoreState, PartialProps> = types.MapDispatchToProps<StoreState, PartialProps>
 
 --[[
 	Formats a multi-line message with printf-style placeholders.
