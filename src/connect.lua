@@ -10,6 +10,7 @@ local types = require(script.Parent.types)
 type ThunkfulDispatchProp<State> = types.ThunkfulDispatchProp<State>
 type MapStateToProps<StoreState, Props, PartialProps> = types.MapStateToProps<StoreState, Props, PartialProps>
 type MapStateToPropsOrThunk<StoreState, Props, PartialProps> = types.MapStateToPropsOrThunk<StoreState, Props, PartialProps>
+type ActionCreatorMap = types.ActionCreatorMap
 type MapDispatchToPropsThunk<StoreState, PartialProps> = types.MapDispatchToPropsThunk<StoreState, PartialProps>
 type MapDispatchToProps<StoreState, PartialProps> = types.MapDispatchToProps<StoreState, PartialProps>
 
