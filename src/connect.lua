@@ -15,8 +15,11 @@ type MapStateToPropsOrThunk<StoreState, Props, PartialProps> = types.MapStateToP
 	PartialProps
 >
 type ActionCreatorMap = types.ActionCreatorMap
-type MapDispatchToPropsThunk<StoreState, PartialProps> = types.MapDispatchToPropsThunk<StoreState, PartialProps>
-type MapDispatchToProps<StoreState, PartialProps> = types.MapDispatchToProps<StoreState, PartialProps>
+type MapDispatchToProps<StoreState, PartialProps> = types.MapDispatchToPropsThunk<StoreState, PartialProps>
+type MapDispatchToPropsOrActionCreator<StoreState, PartialProps> = types.MapDispatchToPropsOrActionCreator<
+	StoreState,
+	PartialProps
+>
 
 --[[
 	Formats a multi-line message with printf-style placeholders.
@@ -68,7 +71,7 @@ local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatc
 		Props,
 		MappedStatePartialProps
 	>?,
-	mapDispatchToProps: MapDispatchToProps<
+	mapDispatchToProps: MapDispatchToPropsOrActionCreator<
 		StoreState,
 		MappedDispatchPartialProps
 	>?
@@ -173,9 +176,9 @@ local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatc
 					end
 				end
 			elseif mapDispatchType == "function" then
-				mappedStoreDispatch = (
-					mapDispatchToProps :: MapDispatchToPropsThunk<StoreState, MappedDispatchPartialProps>
-				)((dispatch :: any) :: ThunkfulDispatchProp<StoreState>)
+				mappedStoreDispatch = (mapDispatchToProps :: MapDispatchToProps<StoreState, MappedDispatchPartialProps>)(
+					(dispatch :: any) :: ThunkfulDispatchProp<StoreState>
+				)
 			end
 
 			local stateUpdater = makeStateUpdater(self.store)

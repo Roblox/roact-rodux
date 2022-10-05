@@ -21,10 +21,10 @@ export type ActionCreatorMap = {
 	[string]: ActionCreator<any, any, ...any>,
 }
 
-export type MapDispatchToPropsThunk<StoreState, PartialProps> = (ThunkfulDispatchProp<StoreState>) -> PartialProps?
+export type MapDispatchToProps<StoreState, PartialProps> = (ThunkfulDispatchProp<StoreState>) -> PartialProps?
 
-export type MapDispatchToProps<StoreState, PartialProps> =
-	MapDispatchToPropsThunk<StoreState, PartialProps>
+export type MapDispatchToPropsOrActionCreator<StoreState, PartialProps> =
+	MapDispatchToProps<StoreState, PartialProps>
 	| ActionCreatorMap
 
 return nil
