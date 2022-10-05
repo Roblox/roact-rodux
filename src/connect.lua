@@ -15,7 +15,7 @@ type MapStateToPropsOrThunk<StoreState, Props, PartialProps> = types.MapStateToP
 	PartialProps
 >
 type ActionCreatorMap = types.ActionCreatorMap
-type MapDispatchToProps<StoreState, PartialProps> = types.MapDispatchToPropsThunk<StoreState, PartialProps>
+type MapDispatchToProps<StoreState, PartialProps> = types.MapDispatchToProps<StoreState, PartialProps>
 type MapDispatchToPropsOrActionCreator<StoreState, PartialProps> = types.MapDispatchToPropsOrActionCreator<
 	StoreState,
 	PartialProps
