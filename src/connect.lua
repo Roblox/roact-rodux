@@ -76,8 +76,6 @@ local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatc
 		MappedDispatchPartialProps
 	>?
 )
-	local connectTrace = debug.traceback()
-
 	if mapStateToPropsOrThunk ~= nil then
 		assert(typeof(mapStateToPropsOrThunk) == "function", "mapStateToProps must be a function or nil!")
 	else
@@ -96,6 +94,7 @@ local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatc
 
 	return function(innerComponent)
 		if innerComponent == nil then
+			local connectTrace = debug.traceback()
 			local message = formatMessage({
 				"connect returns a function that must be passed a component.",
 				"Check the connection at:",
