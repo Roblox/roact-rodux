@@ -151,7 +151,7 @@ local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatc
 			-- instead of the original mapStateToProps. This matches react-redux
 			-- and enables connectors to keep instance-level state.
 			if isCallable(mappedStoreState) then
-				mapStateToProps = mappedStoreState
+				mapStateToProps = mappedStoreState :: any
 				mappedStoreState = mapStateToProps(storeState, self.props.innerProps)
 			end
 
