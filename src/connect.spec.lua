@@ -53,6 +53,12 @@ return function()
 			})
 		end)
 
+		it("should accept action creators that are callable tables", function()
+			connect(nil, {
+				foo = Rodux.makeActionCreator("Foo", function() end),
+			})
+		end)
+
 		it("should throw if not passed a component", function()
 			local selector = function(store)
 				return {}

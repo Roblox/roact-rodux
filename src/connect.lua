@@ -33,6 +33,14 @@ local function noop()
 end
 
 --[[
+	Returns `true` if the value can be called i.e. you can write `value(...)`.
+]]
+local function isCallable(value: any): boolean
+	return type(value) == "function" or
+		(type(value) == "table" and getmetatable(value) and getmetatable(value).__call ~= nil) or false
+end
+
+--[[
 	The stateUpdater accepts props when they update and computes the
 	complete set of props that should be passed to the wrapped component.
 
@@ -77,7 +85,7 @@ local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatc
 	>?
 )
 	if mapStateToPropsOrThunk ~= nil then
-		assert(typeof(mapStateToPropsOrThunk) == "function", "mapStateToProps must be a function or nil!")
+		assert(isCallable(mapStateToPropsOrThunk), "mapStateToProps must be a function or nil!")
 	else
 		mapStateToPropsOrThunk = noop
 	end
@@ -142,7 +150,7 @@ local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatc
 			-- value. In this variant, we keep that value as mapStateToProps
 			-- instead of the original mapStateToProps. This matches react-redux
 			-- and enables connectors to keep instance-level state.
-			if typeof(mappedStoreState) == "function" then
+			if isCallable(mappedStoreState) then
 				mapStateToProps = mappedStoreState
 				mappedStoreState = mapStateToProps(storeState, self.props.innerProps)
 			end
@@ -164,20 +172,20 @@ local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatc
 			end
 
 			local mappedStoreDispatch: any
-			if mapDispatchType == "table" then
+			if isCallable(mapDispatchToProps) then
+				mappedStoreDispatch = (mapDispatchToProps :: MapDispatchToProps<StoreState, MappedDispatchPartialProps>)(
+					(dispatch :: any) :: ThunkfulDispatchProp<StoreState>
+				)
+			elseif mapDispatchType == "table" then
 				mappedStoreDispatch = {}
 
 				for key, actionCreator in pairs(mapDispatchToProps :: ActionCreatorMap) do
-					assert(typeof(actionCreator) == "function", "mapDispatchToProps must contain function values")
+					assert(isCallable(actionCreator), "mapDispatchToProps must contain function values")
 
 					mappedStoreDispatch[key] = function(...)
 						dispatch(actionCreator(...))
 					end
 				end
-			elseif mapDispatchType == "function" then
-				mappedStoreDispatch = (mapDispatchToProps :: MapDispatchToProps<StoreState, MappedDispatchPartialProps>)(
-					(dispatch :: any) :: ThunkfulDispatchProp<StoreState>
-				)
 			end
 
 			local stateUpdater = makeStateUpdater(self.store)
