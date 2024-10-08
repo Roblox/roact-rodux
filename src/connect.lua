@@ -1,7 +1,25 @@
+--!strict
 local Roact = require(script.Parent.Parent.Roact)
+
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
 local StoreContext = require(script.Parent.StoreContext)
+
+local types = require(script.Parent.types)
+
+type ThunkfulDispatchProp<State> = types.ThunkfulDispatchProp<State>
+type MapStateToProps<StoreState, Props, PartialProps> = types.MapStateToProps<StoreState, Props, PartialProps>
+type MapStateToPropsOrThunk<StoreState, Props, PartialProps> = types.MapStateToPropsOrThunk<
+	StoreState,
+	Props,
+	PartialProps
+>
+type ActionCreatorMap = types.ActionCreatorMap
+type MapDispatchToProps<StoreState, PartialProps> = types.MapDispatchToProps<StoreState, PartialProps>
+type MapDispatchToPropsOrActionCreator<StoreState, PartialProps> = types.MapDispatchToPropsOrActionCreator<
+	StoreState,
+	PartialProps
+>
 
 --[[
 	Formats a multi-line message with printf-style placeholders.
@@ -47,9 +65,17 @@ end
 		() -> (storeState, props) -> partialProps
 	mapDispatchToProps: (dispatch) -> partialProps
 ]]
-local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
-	local connectTrace = debug.traceback()
-
+local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatchPartialProps>(
+	mapStateToPropsOrThunk: MapStateToPropsOrThunk<
+		StoreState,
+		Props,
+		MappedStatePartialProps
+	>?,
+	mapDispatchToProps: MapDispatchToPropsOrActionCreator<
+		StoreState,
+		MappedDispatchPartialProps
+	>?
+)
 	if mapStateToPropsOrThunk ~= nil then
 		assert(typeof(mapStateToPropsOrThunk) == "function", "mapStateToProps must be a function or nil!")
 	else
@@ -68,6 +94,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 
 	return function(innerComponent)
 		if innerComponent == nil then
+			local connectTrace = debug.traceback()
 			local message = formatMessage({
 				"connect returns a function that must be passed a component.",
 				"Check the connection at:",
@@ -87,6 +114,7 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 			if prevState.stateUpdater ~= nil then
 				return prevState.stateUpdater(nextProps.innerProps, prevState)
 			end
+			return nil
 		end
 
 		function Connection:init(props)
@@ -106,7 +134,8 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 
 			local storeState = self.store:getState()
 
-			local mapStateToProps = mapStateToPropsOrThunk
+			local mapStateToProps =
+				mapStateToPropsOrThunk :: MapStateToProps<StoreState, Props, MappedStatePartialProps>
 			local mappedStoreState = mapStateToProps(storeState, self.props.innerProps)
 
 			-- mapStateToPropsOrThunk can return a function instead of a state
@@ -134,11 +163,11 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 				return self.store:dispatch(...)
 			end
 
-			local mappedStoreDispatch
+			local mappedStoreDispatch: any
 			if mapDispatchType == "table" then
 				mappedStoreDispatch = {}
 
-				for key, actionCreator in pairs(mapDispatchToProps) do
+				for key, actionCreator in pairs(mapDispatchToProps :: ActionCreatorMap) do
 					assert(typeof(actionCreator) == "function", "mapDispatchToProps must contain function values")
 
 					mappedStoreDispatch[key] = function(...)
@@ -146,7 +175,9 @@ local function connect(mapStateToPropsOrThunk, mapDispatchToProps)
 					end
 				end
 			elseif mapDispatchType == "function" then
-				mappedStoreDispatch = mapDispatchToProps(dispatch)
+				mappedStoreDispatch = (mapDispatchToProps :: MapDispatchToProps<StoreState, MappedDispatchPartialProps>)(
+					(dispatch :: any) :: ThunkfulDispatchProp<StoreState>
+				)
 			end
 
 			local stateUpdater = makeStateUpdater(self.store)

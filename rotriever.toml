@@ -1,6 +1,6 @@
 [package]
 name = "RoactRodux"
-author = "Roblox"
+authors = ["Roblox"]
 license = "Apache-2.0"
 content_root = "src"
 version = "0.5.1"
@@ -8,4 +8,4 @@ files = ["*", "!*.spec.lua"]
 
 [dependencies]
 Roact = "github.com/roblox/roact@1.4"
-Rodux = "github.com/roblox/rodux@3.0"
+Rodux = "github.com/roblox/rodux@4.0.0-rc.0"

@@ -13,3 +13,6 @@
 # Rotriever
 rotriever.lock
 Packages
+
+# Misc OS
+.DS_Store
