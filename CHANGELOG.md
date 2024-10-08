@@ -1,6 +1,8 @@
 # RoactRodux Changelog
 
 # Unreleased Changes
+* Update function type checks to account for callable tables (like those returned by Rodux.makeActionCreator).
+
 ## 0.5.1 (2022-05-20)
 * Expose StoreContext in public API (for use by hooks) ([#56](https://github.com/Roblox/roact-rodux/pull/56))
 

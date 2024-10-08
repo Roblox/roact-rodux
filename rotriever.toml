@@ -3,7 +3,7 @@ name = "RoactRodux"
 authors = ["Roblox"]
 license = "Apache-2.0"
 content_root = "src"
-version = "0.5.1"
+version = "0.5.2"
 files = ["*", "!*.spec.lua"]
 
 [dependencies]
