@@ -348,4 +348,166 @@ return function()
 
 		Roact.unmount(handle)
 	end)
+
+	describe("eager store updates", function()
+		local Flags = require(script.Parent.Flags)
+
+		local originalGetEagerConnectUpdates
+		local originalSetState
+		local setStateCount
+
+		local function mapStateToProps(state)
+			return {
+				count = state.count,
+			}
+		end
+
+		local function setReducer(state, action)
+			state = state or { count = 0 }
+
+			if action.type == "set" then
+				return { count = action.count }
+			elseif action.type == "touch" then
+				return { count = state.count }
+			end
+
+			return state
+		end
+
+		-- Roact copies Component methods onto subclasses when they are
+		-- created, so this must be installed before calling connect.
+		local function connectCountingSetState(component)
+			Roact.Component.setState = function(self, ...)
+				setStateCount = setStateCount + 1
+				return originalSetState(self, ...)
+			end
+			local connected = connect(mapStateToProps)(component)
+			Roact.Component.setState = originalSetState
+			return connected
+		end
+
+		local function mountWithStore(store, component)
+			return Roact.mount(Roact.createElement(StoreProvider, {
+				store = store,
+			}, {
+				someComponent = Roact.createElement(component),
+			}))
+		end
+
+		beforeEach(function()
+			originalGetEagerConnectUpdates = Flags.getEagerConnectUpdates
+			originalSetState = Roact.Component.setState
+			setStateCount = 0
+		end)
+
+		afterEach(function()
+			Flags.getEagerConnectUpdates = originalGetEagerConnectUpdates
+			Roact.Component.setState = originalSetState
+		end)
+
+		it("should not call setState when the mapped state is unchanged", function()
+			Flags.getEagerConnectUpdates = function()
+				return true
+			end
+
+			local ConnectedSomeComponent = connectCountingSetState(NoopComponent)
+			local store = Rodux.Store.new(setReducer)
+			local handle = mountWithStore(store, ConnectedSomeComponent)
+
+			store:dispatch({ type = "touch" })
+			store:flush()
+
+			expect(setStateCount).to.equal(0)
+
+			Roact.unmount(handle)
+		end)
+
+		it("should still call setState for unchanged mapped state when disabled", function()
+			Flags.getEagerConnectUpdates = function()
+				return false
+			end
+
+			local ConnectedSomeComponent = connectCountingSetState(NoopComponent)
+			local store = Rodux.Store.new(setReducer)
+			local handle = mountWithStore(store, ConnectedSomeComponent)
+			local setStateCountAfterMount = setStateCount
+
+			store:dispatch({ type = "touch" })
+			store:flush()
+
+			expect(setStateCount).to.equal(setStateCountAfterMount + 1)
+
+			Roact.unmount(handle)
+		end)
+
+		it("should render new mapped state, including a return to a previously rendered value", function()
+			Flags.getEagerConnectUpdates = function()
+				return true
+			end
+
+			local renderedCounts = {}
+			local function SomeComponent(props)
+				table.insert(renderedCounts, props.count)
+			end
+
+			local ConnectedSomeComponent = connect(mapStateToProps)(SomeComponent)
+			local store = Rodux.Store.new(setReducer)
+			local handle = mountWithStore(store, ConnectedSomeComponent)
+
+			store:dispatch({ type = "set", count = 1 })
+			store:flush()
+			store:dispatch({ type = "touch" })
+			store:flush()
+			store:dispatch({ type = "set", count = 0 })
+			store:flush()
+
+			expect(#renderedCounts).to.equal(3)
+			expect(renderedCounts[1]).to.equal(0)
+			expect(renderedCounts[2]).to.equal(1)
+			expect(renderedCounts[3]).to.equal(0)
+
+			Roact.unmount(handle)
+		end)
+
+		it("should map store updates against the latest props", function()
+			Flags.getEagerConnectUpdates = function()
+				return true
+			end
+
+			local function mapStateWithOffset(state, props)
+				return {
+					total = state.count + props.offset,
+				}
+			end
+
+			local lastTotal = nil
+			local function SomeComponent(props)
+				lastTotal = props.total
+			end
+
+			local ConnectedSomeComponent = connect(mapStateWithOffset)(SomeComponent)
+			local store = Rodux.Store.new(setReducer)
+			local function makeTree(offset)
+				return Roact.createElement(StoreProvider, {
+					store = store,
+				}, {
+					someComponent = Roact.createElement(ConnectedSomeComponent, {
+						offset = offset,
+					}),
+				})
+			end
+
+			local handle = Roact.mount(makeTree(10))
+			expect(lastTotal).to.equal(10)
+
+			handle = Roact.update(handle, makeTree(20))
+			expect(lastTotal).to.equal(20)
+
+			store:dispatch({ type = "set", count = 1 })
+			store:flush()
+			expect(lastTotal).to.equal(21)
+
+			Roact.unmount(handle)
+		end)
+	end)
 end

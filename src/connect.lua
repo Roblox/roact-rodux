@@ -4,6 +4,7 @@ local Roact = require(script.Parent.Parent.Roact)
 local shallowEqual = require(script.Parent.shallowEqual)
 local join = require(script.Parent.join)
 local StoreContext = require(script.Parent.StoreContext)
+local Flags = require(script.Parent.Flags)
 
 local types = require(script.Parent.types)
 
@@ -214,10 +215,23 @@ local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatc
 			for key, value in pairs(extraState) do
 				self.state[key] = value
 			end
+
+			self.latestMappedStoreState = self.state.mappedStoreState
 		end
 
 		function Connection:didMount()
 			local updateStateWithStore = function(storeState)
+				-- Every setState schedules an update, even when the updater
+				-- later bails out, so skip it when the mapped state matches
+				-- what was last rendered or scheduled.
+				if Flags.getEagerConnectUpdates() then
+					local mappedStoreState = self.state.mapStateToProps(storeState, self.props.innerProps)
+					if shallowEqual(mappedStoreState, self.latestMappedStoreState) then
+						return
+					end
+					self.latestMappedStoreState = mappedStoreState
+				end
+
 				self:setState(function(prevState, props)
 					local mappedStoreState = prevState.mapStateToProps(storeState, props.innerProps)
 
@@ -248,6 +262,7 @@ local function connect<StoreState, Props, MappedStatePartialProps, MappedDispatc
 		end
 
 		function Connection:render()
+			self.latestMappedStoreState = self.state.mappedStoreState
 			return Roact.createElement(innerComponent, self.state.propsForChild)
 		end
 
